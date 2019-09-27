@@ -11,7 +11,7 @@
     <form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form>
     @if (Request.IsAuthenticated)
     {
-        <div class="top-menu">
+        <div class="site-nav">
             <button id="logout">LogOut</button>
             <button id="entities">Entities</button>
         </div>
@@ -21,7 +21,7 @@
     }
     else
     {
-        <div class="top-menu">
+        <div class="site-nav">
             <button id="login">LogIn</button>
         </div>
         <div>

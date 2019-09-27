@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace OtherSquare.Models
+namespace OtherSquare.ViewModels
 {
     public class LoginViewModel
     {

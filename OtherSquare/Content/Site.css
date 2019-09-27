@@ -2,12 +2,12 @@
     margin: 0;
 }
 
-.top-menu {
+.site-nav {
     background-color: #BBB;
     padding: 10px 15px;
 }
 
-.sub-menu {
+.area-nav {
     background-color: #DDD;
     padding: 10px 15px;
 }
