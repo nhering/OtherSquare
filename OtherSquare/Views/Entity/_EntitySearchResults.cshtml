@@ -1,0 +1,17 @@
+﻿@model OtherSquare.ViewModels.EntitySearchViewModel
+
+@{
+    if (Model.SearchResults.Count == 0)
+    {
+        <div class="form-section">
+            No results
+        </div>
+    }
+    else
+    {
+        foreach (var entity in Model.SearchResults)
+        {
+            @Html.Partial("_EntitySearchResult", entity)
+        }
+    }
+}

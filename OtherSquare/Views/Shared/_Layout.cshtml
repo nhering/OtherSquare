@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form>
+    @if (Request.IsAuthenticated)
+    {
+        <div class="top-menu">
+            <button id="logout">LogOut</button>
+            <button id="entities">Entities</button>
+        </div>
+        <div>
+            @RenderBody()
+        </div>
+    }
+    else
+    {
+        <div class="top-menu">
+            <button id="login">LogIn</button>
+        </div>
+        <div>
+            @RenderBody()
+        </div>
+    }
+</body>
+</html>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/main")

@@ -1,0 +1,29 @@
+﻿@model OtherSquare.ViewModels.EntityDetailViewModel
+
+<div>
+    @Html.Partial("_EntitySubMenu")
+</div>
+
+<form id="entityDetail" action="/Entity/Save" method="post">
+    <div class="page-section">
+        <button type="submit">Save</button>
+        <button type="button" id="newEntityProperty">New Property</button>
+    </div>
+    <div class="page-section">
+        <div class="form-section">
+            <input id="entityGuid" type="hidden" name="Entity.Guid" value="@Model.Entity.EntityGuid" />
+            <input type="text" name="Entity.Name" value="@Model.Entity.Name" placeholder="Name"/>
+        </div>
+        <div class="form-section">
+            <input type="text" name="Entity.Description" value="@Model.Entity.Description" placeholder="Description"/>
+        </div>
+    </div>
+    <div class="page-section" id="entityProperties">
+        @{
+            foreach (var prop in Model.Properties)
+            {
+                @Html.Partial("_EntityProperty", prop);
+            }
+        }
+    </div>
+</form>

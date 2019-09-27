@@ -1,0 +1,22 @@
+﻿body {
+    margin: 0;
+}
+
+.top-menu {
+    background-color: #BBB;
+    padding: 10px 15px;
+}
+
+.sub-menu {
+    background-color: #DDD;
+    padding: 10px 15px;
+}
+
+.page-section {
+    padding: 10px 15px;
+    border-bottom: solid 1px #DDD;
+}
+
+.form-section {
+    padding: 5px 0;
+}
