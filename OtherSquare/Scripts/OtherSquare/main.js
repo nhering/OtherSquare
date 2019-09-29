@@ -11,6 +11,8 @@ var AddAntiForgeryToken = function (data) {
     return data;
 };
 
+// #region Site Navigation
+
 $('#login').click(function () {
     debug("main.js #login.click");
     window.location.href = '/Account/Login';
@@ -31,6 +33,8 @@ $('#entities').click(function () {
     debug("main.js #accounts.click");
     window.location = "/Entity/Search";
 });
+
+// #endregion
 
 // #region Entities
 
@@ -67,12 +71,6 @@ $(function () {
             $(this).find('.value').attr('name', 'Properties[' + index + '].Value');
             index++;
         });
-        //event.preventDefault();
-        //$.ajax({
-        //    type: form.attr('method'),
-        //    url: form.attr('action'),
-        //    data: form.serialize()
-        //});
     });
 });
 
