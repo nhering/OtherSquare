@@ -28,19 +28,39 @@ namespace OtherSquare.Controllers
         [HttpGet]
         public ActionResult New()
         {
-            return View("EntityDetails", new EntityDetailViewModel());
+            return View("EntityDetails", new EntityViewModel());
+        }
+
+        // GET: Entity/Detail
+        [HttpGet]
+        public ActionResult Detail(Guid entityGuid)
+        {
+            return View("EntityDetails", new EntityViewModel(entityGuid));
         }
 
         // POST: Entity/Save
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult Save(EntityDetailViewModel model)
+        public ActionResult Save(EntityViewModel model)
         {
             if (model.IsValid())
             {
                 model.Update();
+                if (model.IsDeleted)
+                {
+                    return RedirectToAction("Search");
+                }
+                else
+                {
+                    return View("EntityDetails", new EntityViewModel(model.Entity.Guid));
+                }
             }
-            return View("EntityDetails", model);
+            else
+            {
+                //TODO return an error message
+                //For now, just go back to the search page
+                return RedirectToAction("Search");
+            }
         }
 
         // GET: Entity/NewProperty

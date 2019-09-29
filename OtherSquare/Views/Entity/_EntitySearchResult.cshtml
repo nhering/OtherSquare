@@ -1,7 +1,7 @@
 ﻿@model OtherSquare.Models.Entity
 
-<div class="form-section">
-    @*<div>@Model.EntityCreated</div>*@
+<div class="form-section" onclick="EntityDetail(this);">
+    <input type="hidden" class="guid" value="@Model.Guid" />
     <div>@Model.Name</div>
     <div>@Model.Description</div>
 </div>

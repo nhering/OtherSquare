@@ -59,26 +59,32 @@ $('#inputEntitySearch').change(function () {
 
 $(function () {
     var form = $('#entityDetail');
-    let data = form.serialize();
     form.submit(function (event) {
         let index = 0;
         $.each($('.entityProperty'), function () {
-            $(this).find('.guid').attr('name', 'Properties[' + index + '].EntityPropertyGuid');
+            $(this).find('.guid').attr('name', 'Properties[' + index + '].Guid');
             $(this).find('.key').attr('name', 'Properties[' + index + '].Key');
             $(this).find('.value').attr('name', 'Properties[' + index + '].Value');
             index++;
         });
-        event.preventDefault();
-        $.ajax({
-            type: form.attr('method'),
-            url: form.attr('action'),
-            data: form.serialize()
-        });
+        //event.preventDefault();
+        //$.ajax({
+        //    type: form.attr('method'),
+        //    url: form.attr('action'),
+        //    data: form.serialize()
+        //});
     });
 });
 
 $('#newEntityProperty').click(function () {
     debug("main.js #newEntityProperty.click");
+    //For some reason we have to set the value of the input elements to their UI
+    //value before we can capture it in the .html() property of the parent element.
+    $.each($('.entityProperty'), function () {
+        $(this).find('.guid').attr('value', $(this).find('.guid').val());
+        $(this).find('.key').attr('value', $(this).find('.key').val());
+        $(this).find('.value').attr('value', $(this).find('.value').val());
+    });
     let entityProps = $('#entityProperties').html();
     $.ajax({
         type: "GET",
@@ -88,5 +94,10 @@ $('#newEntityProperty').click(function () {
         }
     });
 });
+
+function EntityDetail(elem) {
+    debug("main.js EntityDetail");
+    window.location = "/Entity/Detail?entityGuid=" + $(elem).find('.guid').val();
+}
 
 // #endregion

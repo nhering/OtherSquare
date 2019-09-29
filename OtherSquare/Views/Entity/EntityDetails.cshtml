@@ -1,4 +1,4 @@
-﻿@model OtherSquare.ViewModels.EntityDetailViewModel
+﻿@model OtherSquare.ViewModels.EntityViewModel
 
 <div>
     @Html.Partial("_EntitySubMenu")
@@ -11,7 +11,7 @@
     </div>
     <div class="page-section">
         <div class="form-section">
-            <input id="entityGuid" type="hidden" name="Entity.Guid" value="@Model.Entity.EntityGuid" />
+            <input id="entityGuid" type="hidden" name="Entity.Guid" value="@Model.Entity.Guid" />
             <input type="text" name="Entity.Name" value="@Model.Entity.Name" placeholder="Name"/>
         </div>
         <div class="form-section">
