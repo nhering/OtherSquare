@@ -48,7 +48,7 @@ $('#entityNew').click(function () {
     window.location = "/Entity/New";
 });
 
-$('#inputEntitySearch').change(function () {
+$('#inputEntitySearch').keyup(function () {
     debug("main.js #entitySearch.change " + $(this).val());
     var data = { searchString: $(this).val().trim() };
     $.ajax({

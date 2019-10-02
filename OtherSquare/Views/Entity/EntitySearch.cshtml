@@ -4,10 +4,13 @@
     @Html.Partial("_EntitySubMenu")
 </div>
 <div class="page-section">
-    <label>Search</label>
-    <input id="inputEntitySearch" type="text" />
+    <input id="inputEntitySearch" type="text" placeholder="Search" />
 </div>
 
 <div id="entitySearchResults" class="page-section">
     @Html.Partial("_EntitySearchResults", @Model)
 </div>
+
+<script>
+    document.getElementById('entitySearch').setAttribute('class', 'current-area');
+</script>

@@ -132,7 +132,8 @@ namespace OtherSquare.ViewModels
                             {
                                 prop.Guid = Guid.NewGuid();
                                 prop.Created = DateTime.UtcNow;
-                                prop.EntityGuid = this.Entity.Guid;
+                                prop.Entity = this.Entity;
+                                prop.Value = prop.Value; //TODO Encrypt
                                 prop.Type = EntityType.ACTIVE;
                                 db.EntityProperties.Add(prop);
                             }

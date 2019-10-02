@@ -24,12 +24,12 @@ namespace OtherSquare.Models
         [Required]
         public string Type { get; set; }
 
+        public virtual Entity Entity { get; set; }
         [ForeignKey("Entity")]
         [Column(Order = 2)]
         public Guid EntityGuid { get; set; }
         [ForeignKey("Entity")]
         [Column(Order = 3)]
         public DateTime EntityCreated { get; set; }
-        public virtual Entity Entity { get; set; }
     }
 }

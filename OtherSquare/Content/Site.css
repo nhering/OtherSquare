@@ -20,3 +20,9 @@
 .form-section {
     padding: 5px 0;
 }
+
+.current-area {
+    outline: none;
+    border: solid 1px #679dff;
+    box-shadow: 0 0 4px rgba(125, 175, 255, .3);
+}

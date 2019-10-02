@@ -12,10 +12,10 @@
     <div class="page-section">
         <div class="form-section">
             <input id="entityGuid" type="hidden" name="Entity.Guid" value="@Model.Entity.Guid" />
-            <input type="text" name="Entity.Name" value="@Model.Entity.Name" placeholder="Name"/>
+            <input type="text" name="Entity.Name" value="@Model.Entity.Name" placeholder="Name" />
         </div>
         <div class="form-section">
-            <input type="text" name="Entity.Description" value="@Model.Entity.Description" placeholder="Description"/>
+            <input type="text" name="Entity.Description" value="@Model.Entity.Description" placeholder="Description" />
         </div>
     </div>
     <div class="page-section" id="entityProperties">
@@ -27,3 +27,11 @@
         }
     </div>
 </form>
+@{
+    if (Model.Entity.Name == null)
+    {
+        <script>
+            document.getElementById('entityNew').setAttribute('class', 'current-area');
+        </script>
+    }
+}
