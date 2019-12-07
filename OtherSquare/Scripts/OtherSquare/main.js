@@ -1,25 +1,11 @@
-﻿var debug = function (message) {
-    let loggingOn = true;
-    if (loggingOn) {
-        console.log(Date.now() + ' ' + message);
-    }
-};
-
-var AddAntiForgeryToken = function (data) {
-    debug("main.js AddAntiForgeryToken data: " + data);
+﻿var AddAntiForgeryToken = function (data) {
     data.__RequestVerificationToken = $('#__AjaxAntiForgeryForm input[name=__RequestVerificationToken]').val();
     return data;
 };
 
 // #region Site Navigation
 
-$('#login').click(function () {
-    debug("main.js #login.click");
-    window.location.href = '/Account/Login';
-});
-
 $('#logout').click(function () {
-    debug("main.js #logout.click");
     $.ajax({
         url: "/Account/LogOff",
         type: "POST",
@@ -29,27 +15,44 @@ $('#logout').click(function () {
     });
 });
 
-$('#entities').click(function () {
-    debug("main.js #accounts.click");
-    window.location = "/Entity/Search";
+$('.site-nav-btn').click(function () {
+    window.location = $(this).data("location");
 });
+
+$('.obj-detail').click(function () {
+    window.location = $(this).data("endpoint") + "Detail?guid=" + $(this).data("guid");
+});
+
+/**
+ * Add the class 'selected' to the item clicked and
+ * remove it from all other elements in the list.
+ * @param {string} itemClass The class of the list element the item belongs to.
+ * @param {id} id The id of the element to set as selected.
+ */
+var SetSelected = function (itemClass, id) {
+    $('.' + itemClass).each(function () {
+        $(this).removeClass('selected');
+    });
+    $("#" + id).addClass('selected');
+};
 
 // #endregion
 
+/**
+ * Change the color of the border of an element for a moment.
+ * @param {string} id The id of the element to affect.
+ * @param {string} color The color to change to.
+ */
+var DrawAttention = function (id, color) {
+    var orig = $('#' + id).attr('style');
+    if (typeof orig === 'undefined') orig = '';
+    $('#' + id).attr('style', orig + 'border-color:' + color + ';box-shadow: 0 0 15px rgba(0,0,0,.1)');
+    setTimeout(function () { $('#' + id).attr('style', orig); }, 1000);
+};
+
 // #region Entities
 
-$('#entitySearch').click(function () {
-    debug("main.js #accounts.click");
-    window.location = "/Entity/Search";
-});
-
-$('#entityNew').click(function () {
-    debug("main.js #accounts.click");
-    window.location = "/Entity/New";
-});
-
 $('#inputEntitySearch').keyup(function () {
-    debug("main.js #entitySearch.change " + $(this).val());
     var data = { searchString: $(this).val().trim() };
     $.ajax({
         url: "/Entity/Search",
@@ -75,7 +78,6 @@ $(function () {
 });
 
 $('#newEntityProperty').click(function () {
-    debug("main.js #newEntityProperty.click");
     //For some reason we have to set the value of the input elements to their UI
     //value before we can capture it in the .html() property of the parent element.
     $.each($('.entityProperty'), function () {
@@ -94,7 +96,6 @@ $('#newEntityProperty').click(function () {
 });
 
 function EntityDetail(elem) {
-    debug("main.js EntityDetail");
     window.location = "/Entity/Detail?entityGuid=" + $(elem).find('.guid').val();
 }
 

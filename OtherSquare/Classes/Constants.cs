@@ -12,4 +12,11 @@ namespace OtherSquare.Classes
         public const string HISTORY = "history";
         public const string TEMPLATE = "template";
     }
+
+    public class SCF_ListType
+    {
+        public const string SUBJECT = "Subject";
+        public const string CATEGORY = "Category";
+        public const string FLASH_CARD = "Flash Card";
+    }
 }

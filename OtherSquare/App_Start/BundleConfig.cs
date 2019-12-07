@@ -8,17 +8,28 @@ namespace OtherSquare
         // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+            #region Scripts
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+                "~/Scripts/jquery-{version}.js"));
+
+            //bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+            //    "~/Scripts/jquery.validate*"));
 
             bundles.Add(new ScriptBundle("~/bundles/main").Include(
-                      "~/Scripts/OtherSquare/main.js"));
+                "~/Scripts/OtherSquare/main.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/study").Include(
+                "~/Scripts/OtherSquare/study.js"));
+
+            #endregion
+
+            #region Styles
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/site.css"));
+                "~/Content/site.css"));
+
+            #endregion
         }
     }
 }

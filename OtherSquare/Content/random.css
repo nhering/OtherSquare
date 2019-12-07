@@ -1,0 +1,20 @@
+﻿.rand-btn {
+    z-index: 2;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    cursor: pointer;
+    border: solid 1px #CCC;
+    color: #CCC;
+    width: 25px;
+    height: 25px;
+    line-height: 1.8;
+    text-align: center;
+    border-radius: 100%;
+    background-color: rgba(255, 255, 255, .1);
+}
+
+.rand-elem {
+    align-self: center;
+    justify-self: center;
+}

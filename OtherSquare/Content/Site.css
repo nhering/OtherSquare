@@ -1,28 +1,233 @@
-﻿body {
+﻿/*#region HTML Tags*/
+
+* {
+    font-size: 14px;
+    font-family: arial;
+}
+
+body {
     margin: 0;
 }
 
+button {
+    border-radius: 3px;
+    border: solid 1px #808080;
+    height: 20px;
+    padding: 1px 7px;
+}
+
+button:active {
+    outline: none;
+}
+
+button:focus {
+    outline: none;
+    border: solid 1px #36d500;
+}
+
+    button:disabled {
+        color: #efefef;
+        border: solid 1px #efefef;
+    }
+
+input {
+    padding: 0 6px;
+    border-radius: 3px;
+    border: solid 1px #BBB;
+    margin-top: 5px
+}
+
+input:focus {
+    outline: none;
+    border: solid 1px #36d500;
+}
+
+label {
+    padding-top: 3px;
+}
+
+/*#endregion*/
+
 .site-nav {
     background-color: #BBB;
-    padding: 10px 15px;
+    padding: 5px;
 }
 
 .area-nav {
     background-color: #DDD;
-    padding: 10px 15px;
+    padding: 5px;
 }
 
 .page-section {
-    padding: 10px 15px;
+    padding: 5px;
     border-bottom: solid 1px #DDD;
-}
-
-.form-section {
-    padding: 5px 0;
 }
 
 .current-area {
     outline: none;
-    border: solid 1px #679dff;
-    box-shadow: 0 0 4px rgba(125, 175, 255, .3);
+    box-shadow: 0 3px 0 #000;
 }
+
+.form-area {
+    padding: 5px;
+    background-color: #EFEFEF;
+    border: solid 1px #BBB;
+    border-radius: 4px;
+    margin: 5px 5px 0 5px;
+}
+
+.item-list {
+    background-color: #FFF;
+    border: solid 1px #BBB;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    overflow-y: scroll;
+    padding: 1px 0;
+}
+
+.item-list::-webkit-scrollbar {
+    width: 0px;
+}
+
+/*#region Study*/
+
+.study-index {
+    display: grid;
+    grid-template-columns: 300px 600px;
+}
+
+.scf-list {
+    display: grid;
+    grid-template-rows: 25px 25px 134px;
+}
+
+.scf-list-nav {
+    display: grid;
+    grid-template-columns: 1fr 45px;
+}
+
+.scf-list-head {
+    display: grid;
+    grid-template-columns: 1fr 45px;
+    background-color: #FFF;
+    border: solid 1px #BBB;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 4px;
+}
+
+.scf-list-item {
+    display: grid;
+    grid-template-columns: 1fr 42px;
+    padding: 4px;
+    margin: 0 2px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.scf-list-item:hover {
+    border: 1px solid #007906;
+    padding:3px
+}
+
+.scf-list-item:nth-child(2n) {
+    background-color: #EFEFEF;
+}
+
+.selected {
+    border: 1px solid #007906;
+    padding: 3px
+}
+
+.study-details {
+    background-color: #FFF;
+    margin: 5px 5px 0 0;
+}
+
+.details-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-gap: 10px;
+}
+
+.category-section {
+    display: grid;
+    grid-template-rows: 25px 25px 132px 25px;
+    padding: 5px;
+    background-color: #EFEFEF;
+    border: solid 1px #BBB;
+    border-radius: 4px;
+    margin: 5px 5px 0 5px;
+}
+
+.category-section-nav {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.category-section-head {
+    display: grid;
+    grid-template-columns: 1fr 45px;
+    background-color: #FFF;
+    border: solid 1px #BBB;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 4px;
+}
+
+.category-section-list-item {
+    display: grid;
+    grid-template-columns: 1fr 45px;
+    padding: 4px;
+    margin: 0 2px;
+    border-radius: 3px;
+}
+
+.category-section-list-item:hover {
+    border: 1px solid #007906;
+    padding: 3px
+}
+
+.category-section-list-item:nth-child(2n) {
+    background-color: #EFEFEF;
+}
+
+.category-section-ddl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    padding-top: 5px;
+}
+
+.flashcard-section {
+    display: grid;
+    grid-template-rows: 25px 25px 132px 25px;
+    padding: 5px;
+    background-color: #EFEFEF;
+    border: solid 1px #BBB;
+    border-radius: 4px;
+    margin: 5px 5px 0 5px;
+}
+
+.flashcard-section-head {
+    display: grid;
+    grid-template-columns: 1fr 45px;
+    grid-gap: 10px;
+    background-color: #FFF;
+    border: solid 1px #BBB;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 4px;
+}
+
+.flashcard-section-ddl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    padding-top: 5px;
+}
+
+/*#endregion*/

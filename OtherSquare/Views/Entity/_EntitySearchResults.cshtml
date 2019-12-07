@@ -11,7 +11,7 @@
     {
         foreach (var entity in Model.SearchResults)
         {
-            @Html.Partial("_EntitySearchResult", entity)
+            @Html.Partial("_EntityListItem", entity)
         }
     }
 }

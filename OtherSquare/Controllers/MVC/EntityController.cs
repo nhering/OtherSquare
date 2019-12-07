@@ -13,7 +13,7 @@ namespace OtherSquare.Controllers
         // GET: Entity/Search
         public ActionResult Search()
         {
-            return View("EntitySearch", new EntitySearchViewModel());
+            return View("EntityList", new EntitySearchViewModel());
         }
 
         // POST: Entity/Search
@@ -33,9 +33,9 @@ namespace OtherSquare.Controllers
 
         // GET: Entity/Detail
         [HttpGet]
-        public ActionResult Detail(Guid entityGuid)
+        public ActionResult EntityDetail(Guid guid)
         {
-            return View("EntityDetails", new EntityViewModel(entityGuid));
+            return View("EntityDetails", new EntityViewModel(guid));
         }
 
         // POST: Entity/Save

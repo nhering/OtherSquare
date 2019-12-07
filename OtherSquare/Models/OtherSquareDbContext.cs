@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Data.Entity;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity;
+﻿using System.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace OtherSquare.Models
@@ -25,5 +18,11 @@ namespace OtherSquare.Models
         //[acct] Accounts
         public DbSet<Entity> Entities { get; set; }
         public DbSet<EntityProperty> EntityProperties { get; set; }
+
+        //[study] Flash Cards
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Subject_Category> Subject_Categories { get; set; }
+        public DbSet<FlashCard> FlashCards { get; set; }
     }
 }

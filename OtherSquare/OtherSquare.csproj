@@ -178,9 +178,13 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Classes\Constants.cs" />
+    <Compile Include="Classes\Helpers.cs" />
+    <Compile Include="Controllers\API\EntitiesController.cs" />
+    <Compile Include="Controllers\API\StudyApiController.cs" />
     <Compile Include="Controllers\MVC\AccountController.cs" />
     <Compile Include="Controllers\MVC\EntityController.cs" />
     <Compile Include="Controllers\MVC\HomeController.cs" />
+    <Compile Include="Controllers\MVC\StudyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -188,18 +192,42 @@
     <Compile Include="Migrations\201909272235539_initial.Designer.cs">
       <DependentUpon>201909272235539_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910110045404_LMS.cs" />
+    <Compile Include="Migrations\201910110045404_LMS.Designer.cs">
+      <DependentUpon>201910110045404_LMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910132010503_add description property to Course.cs" />
+    <Compile Include="Migrations\201910132010503_add description property to Course.Designer.cs">
+      <DependentUpon>201910132010503_add description property to Course.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910180157395_remove LMS.cs" />
+    <Compile Include="Migrations\201910180157395_remove LMS.Designer.cs">
+      <DependentUpon>201910180157395_remove LMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910201508142_add study models.cs" />
+    <Compile Include="Migrations\201910201508142_add study models.Designer.cs">
+      <DependentUpon>201910201508142_add study models.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\ViewModels\AccountViewModels.cs" />
+    <Compile Include="Models\Database\[study] FlashCards\Category.cs" />
+    <Compile Include="Models\Database\[study] FlashCards\FlashCard.cs" />
+    <Compile Include="Models\Database\[study] FlashCards\Subject.cs" />
+    <Compile Include="Models\Database\[study] FlashCards\Subject_Category.cs" />
+    <Compile Include="Models\ViewModels\[dbo] AspNetIdentity\AccountViewModels.cs" />
     <Compile Include="Models\Database\[acct] Account\Entity.cs" />
     <Compile Include="Models\Database\[acct] Account\EntityProperty.cs" />
     <Compile Include="Models\Database\[dbo] AspNetIdentity\IdentityModels.cs" />
     <Compile Include="Models\OtherSquareDbContext.cs" />
-    <Compile Include="Models\ViewModels\EntityPropertyViewModels.cs" />
-    <Compile Include="Models\ViewModels\EntityViewModels.cs" />
+    <Compile Include="Models\ViewModels\[acct] Account\EntityPropertyViewModels.cs" />
+    <Compile Include="Models\ViewModels\[acct] Account\EntityViewModels.cs" />
+    <Compile Include="Models\ViewModels\[study] Study\CategoryViewModel.cs" />
+    <Compile Include="Models\ViewModels\[study] Study\FlashCard _Index_ViewModel.cs" />
+    <Compile Include="Models\ViewModels\[study] Study\SubjectViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\random.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -218,6 +246,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\OtherSquare\main.js" />
+    <Content Include="Scripts\OtherSquare\random.js" />
+    <Content Include="Scripts\OtherSquare\study.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -233,15 +263,17 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Entity\EntityDetails.cshtml" />
-    <Content Include="Views\Entity\EntitySearch.cshtml" />
+    <Content Include="Views\Entity\EntityList.cshtml" />
     <Content Include="Views\Entity\_EntityProperty.cshtml" />
-    <Content Include="Views\Entity\_EntitySearchResult.cshtml" />
+    <Content Include="Views\Entity\_EntityListItem.cshtml" />
     <Content Include="Views\Entity\_EntitySearchResults.cshtml" />
     <Content Include="Views\Entity\_EntitySubMenu.cshtml" />
+    <Content Include="Views\Study\StudyIndex.cshtml" />
+    <Content Include="Views\Study\_SCF_List.cshtml" />
+    <Content Include="Views\Study\_Subject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\API\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -249,6 +281,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201909272235539_initial.resx">
       <DependentUpon>201909272235539_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910110045404_LMS.resx">
+      <DependentUpon>201910110045404_LMS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910132010503_add description property to Course.resx">
+      <DependentUpon>201910132010503_add description property to Course.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910180157395_remove LMS.resx">
+      <DependentUpon>201910180157395_remove LMS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910201508142_add study models.resx">
+      <DependentUpon>201910201508142_add study models.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

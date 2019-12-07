@@ -36,7 +36,6 @@ namespace OtherSquare.ViewModels
             {
                 using (OtherSquareDbContext db = new OtherSquareDbContext())
                 {
-                    Regex regex = new Regex(searchString.ToLower());
                     this.SearchResults = db.Entities.Where(r => r.Name.Contains(searchString)
                     && r.Type != EntityType.DELETED
                     && r.Type != EntityType.HISTORY
@@ -156,7 +155,7 @@ namespace OtherSquare.ViewModels
                 {
                     #region Update the entity
 
-                    if (this.Entity.Guid == Guid.Empty || this.Entity.Guid == null )
+                    if ( this.Entity.Guid == Guid.Empty || this.Entity.Guid == null )
                     {
                         this.Create();
                         return;
