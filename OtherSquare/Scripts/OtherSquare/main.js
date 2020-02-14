@@ -1,9 +1,37 @@
-﻿var AddAntiForgeryToken = function (data) {
-    data.__RequestVerificationToken = $('#__AjaxAntiForgeryForm input[name=__RequestVerificationToken]').val();
-    return data;
-};
+﻿let settingsObj = {};
+let redirectUrl = "";
 
-// #region Site Navigation
+class InputValidation {
+    constructor(cssClass, message, object) {
+        this.cssClass = cssClass;
+        this.message = message;
+        this.object = object;
+    }
+
+    static fromJson(jsonString) {
+        let obj = JSON.parse(jsonString);
+        return new InputValidation(
+            obj.CSSClass,
+            obj.Message,
+            obj.Object
+        );
+    }    
+
+    showValidation() {
+        console.log("showValidation called");
+        let val = document.getElementById("inputValidation");
+        val.classList.add("validation");
+        val.classList.add(this.cssClass);
+        val.classList.remove("hide");
+        val.innerText = this.message;
+        val.addEventListener("click", function () {
+            document.getElementById("inputValidation").innerText = "";
+            val.classList.remove("validation");
+            val.classList.remove(this.cssClass);
+            val.classList.add("hide");
+        });
+    }
+}
 
 $('#logout').click(function () {
     $.ajax({
@@ -15,88 +43,117 @@ $('#logout').click(function () {
     });
 });
 
-$('.site-nav-btn').click(function () {
-    window.location = $(this).data("location");
+$('.site-nav').click(function () {
+    let loc = $(this).data("location");
+    if (typeof loc !== "undefined") window.location = loc;
 });
 
-$('.obj-detail').click(function () {
-    window.location = $(this).data("endpoint") + "Detail?guid=" + $(this).data("guid");
+$('.area-nav').click(function () {
+    let loc = $(this).data("location");
+    if (typeof loc !== "undefined") window.location = loc;
 });
 
 /**
- * Add the class 'selected' to the item clicked and
- * remove it from all other elements in the list.
- * @param {string} itemClass The class of the list element the item belongs to.
- * @param {id} id The id of the element to set as selected.
+ * Add the antiforgerytoken to any ajax data object to send to the server
+ * @param {object} data The data object in the ajax call
+ * @returns {any} The data object with the token added
  */
-var SetSelected = function (itemClass, id) {
-    $('.' + itemClass).each(function () {
-        $(this).removeClass('selected');
-    });
-    $("#" + id).addClass('selected');
+var AddAntiForgeryToken = function (data) {
+    data.__RequestVerificationToken = $('#__AjaxAntiForgeryForm input[name=__RequestVerificationToken]').val();
+    return data;
 };
 
-// #endregion
+/**
+ * Add the class 'selected' to each item in the array argument. Use at the bottom of each site area page to keep the 'tabs' looking like they are selected.
+ * @param {Array} IDs The array of HTML elements to apply the selected class to.
+ */
+var SetNavBreadcrumbs = function (IDs) {
+    console.log("SetNavBreadcrumbs called");
+    for (let i = 0; i < IDs.length; i++) {
+        $("#" + IDs[i]).addClass("selected");
+    }
+};
+
+/**
+ * This is the primary interface for saving the settings of any individual page/area of the site.
+ * @param {function} success The callback function to execute if the save is successful.
+ * @param {function} error The callback function to execute if the save fails.
+ */
+var SaveSettings = function (success, error) {
+    console.log("SaveSettings called");
+    let data = AddAntiForgeryToken({
+        RedirectURL: "/" + redirectUrl,
+        SettingsJSON: JSON.stringify(settingsObj)
+    });
+    //console.log(JSON.stringify(data));
+    $.ajax({
+        url: "api/Settings/Save",
+        type: "POST",
+        data: data,
+        success: function (response) {
+            console.log("Settings save succeeded for " + redirectUrl);
+            if (typeof success !== "undefined") success(response);
+        },
+        error: function (response) {
+            console.log("Settings save failed for " + redirectUrl);
+            if (typeof error !== "undefined") error(response);
+        }
+    });
+};
+
+/**
+ * !!..THIS IS NOT A REPLACEMENT FOR A TRUE GUID CLASS...!!
+ * This just checks to see if a string representation of a Guid is all zeros
+ * or supplies a string representation of an empty Guid
+ */
+class Guid {
+    /**
+     * Check if a string representation of a Guid is all zeros. In other words Guid.Empty()
+     * @param {any} guid The string to evaluate
+     * @returns {boolean} True if the supplied string is an empty string or equals "00000000-0000-0000-0000-000000000000"
+     */
+    static isEmpty(guid) {
+        return guid === "" || guid === "00000000-0000-0000-0000-000000000000";
+    }
+    /**
+     * Get a string representation of an empty Guid. E.G. "00000000-0000-0000-0000-000000000000"
+     * @returns {string} "00000000-0000-0000-0000-000000000000"
+     */
+    static empty() {
+        return "00000000-0000-0000-0000-000000000000";
+    }
+}
 
 /**
  * Change the color of the border of an element for a moment.
  * @param {string} id The id of the element to affect.
  * @param {string} color The color to change to.
+ * @param {bool} toggle If this is set to true, the color will switch back to it's original color after 1000ms.
  */
-var DrawAttention = function (id, color) {
+var DrawAttention = function (id, color, toggle = true) {
     var orig = $('#' + id).attr('style');
     if (typeof orig === 'undefined') orig = '';
-    $('#' + id).attr('style', orig + 'border-color:' + color + ';box-shadow: 0 0 15px rgba(0,0,0,.1)');
-    setTimeout(function () { $('#' + id).attr('style', orig); }, 1000);
+    $('#' + id).attr('style', orig + 'border-color:' + color + ';box-shadow: 0 0 2px rgba(0,0,0,.2)');
+    if (toggle) {
+        setTimeout(function () { $('#' + id).attr('style', orig); }, 1000);
+    }
 };
 
-// #region Entities
+/**
+ * Change the first character in a string to upper case
+ * @param {any} str The string to alter.
+ * @return {string} The a copy of the str argument with the first character in upper case.
+ */
+var ToProperCase = function (str) {
+    let first = str.substring(0, 1);
+    let rest = str.substring(1);
+    first = first.toUpperCase();
+    let returnValue = first + rest;
+    ShowInputValidation();
+    return returnValue;
+};
 
-$('#inputEntitySearch').keyup(function () {
-    var data = { searchString: $(this).val().trim() };
-    $.ajax({
-        url: "/Entity/Search",
-        type: "POST",
-        data: AddAntiForgeryToken(data),
-        success: function (data) {
-            $('#entitySearchResults').html(data);
-        }
-    });
-});
 
-$(function () {
-    var form = $('#entityDetail');
-    form.submit(function (event) {
-        let index = 0;
-        $.each($('.entityProperty'), function () {
-            $(this).find('.guid').attr('name', 'Properties[' + index + '].Guid');
-            $(this).find('.key').attr('name', 'Properties[' + index + '].Key');
-            $(this).find('.value').attr('name', 'Properties[' + index + '].Value');
-            index++;
-        });
-    });
-});
+var ShowInputValidation = function () {
 
-$('#newEntityProperty').click(function () {
-    //For some reason we have to set the value of the input elements to their UI
-    //value before we can capture it in the .html() property of the parent element.
-    $.each($('.entityProperty'), function () {
-        $(this).find('.guid').attr('value', $(this).find('.guid').val());
-        $(this).find('.key').attr('value', $(this).find('.key').val());
-        $(this).find('.value').attr('value', $(this).find('.value').val());
-    });
-    let entityProps = $('#entityProperties').html();
-    $.ajax({
-        type: "GET",
-        url: "/Entity/NewProperty",
-        success: function (data) {
-            $('#entityProperties').html(entityProps + data);
-        }
-    });
-});
-
-function EntityDetail(elem) {
-    window.location = "/Entity/Detail?entityGuid=" + $(elem).find('.guid').val();
-}
-
-// #endregion
+};

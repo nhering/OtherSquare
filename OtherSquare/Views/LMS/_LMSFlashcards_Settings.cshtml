@@ -1,0 +1,27 @@
+﻿@model OtherSquare.ViewModels.NAV_FlashcardSettings
+
+@{ 
+    string expandCollapse = Model.SettingsAccordionExpanded ? "expanded" : "collapsed";
+    string includeArchived = (bool)Model.IncludeArchive ? "checked" : "";
+}
+
+<div class="section">
+    <div class="section-title-bar setting-section @expandCollapse">
+        <div class="section-title">
+            <span class="expand-collapse setting" data-behavior="click" name="SettingsAccordionExpanded">+/-</span>Settings
+        </div>
+    </div>
+    <div class="section-content setting-section @expandCollapse">
+        <div>
+            Score Date Range: From
+            <input id="BeginDate" class="date-picker setting" data-behavior="change" name="BeginDate" value="@Model.BeginDate.Value.ToShortDateString()" />
+            To
+            <input id="EndDate" class="date-picker setting" data-behavior="change" name="EndDate" value="@Model.EndDate.Value.ToShortDateString()" />
+            <button id="applyDateRange">Apply</button>
+            <button id="defaultDateRange">Reset</button>
+        </div>
+        <div>
+            Include Archived:<input type="checkbox"class="setting" data-behavior="click" name="IncludeArchive" style="height:auto;" @includeArchived />
+        </div>
+    </div>
+</div>

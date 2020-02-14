@@ -1,0 +1,23 @@
+﻿@model OtherSquare.ViewModels.ListItemViewModel
+@using Newtonsoft.Json;
+
+@{
+    string archived = Model.IsArchived ? " style=\"color:#999\"" : "";
+    string selected = Model.Selected ? "checked" : "";
+    string selectedObject = Html.Raw(JsonConvert.SerializeObject(Model.SelectedObject)).ToString();
+}
+
+<div class="item-list-item" @archived data-object="@selectedObject">
+    <div>@Model.Title</div>
+    @{
+        if (Model.ScoreIsNA)
+        {
+            <div>N/A</div>
+        }
+        else
+        {
+            <div>@Model.Score %</div>
+        }
+    }
+    <input type="checkbox" @selected />
+</div>

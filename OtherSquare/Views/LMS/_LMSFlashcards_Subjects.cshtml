@@ -1,0 +1,50 @@
+﻿@model OtherSquare.ViewModels.NAV_FlashCardViewModel
+@using OtherSquare.ViewModels;
+@using Newtonsoft.Json;
+
+@{
+    if (Model.Settings.SelectedSubject == null) { Model.Settings.SelectedSubject = new OtherSquare.Models.Subject(); };
+    string expandCollapse = Model.Settings.SubjectAccordionExpanded ? "expanded" : "collapsed";
+    string unarchive = (bool)Model.Settings.IncludeArchive ? "" : "hide";
+}
+
+<div class="section">
+    <div class="section-title-bar subject-section @expandCollapse">
+        <div class="section-title">
+            <span class="expand-collapse setting" data-behavior="click" name="SubjectAccordionExpanded">+/-</span>Subjects
+        </div>
+        <div class="section-controls subject-section @expandCollapse">
+            <button>Archive Selected</button>
+            <button class="unarchive @unarchive">Unarchive Selected</button>
+            <button class="button-new" data-type="subject">New</button>
+        </div>
+    </div>
+    <div class="section-content subject-section @expandCollapse">
+        <div class="item-list">
+            <div class="item-list-title-bar">
+                <div>Title</div>
+                <div>Score</div>
+            </div>
+            <div class="item-list-content">
+                @{
+                    foreach (ListItemViewModel i in Model.SubjectViewModel.SubjectList)
+                    {
+                        @Html.Partial("_LMSFlashcards_ListItem", i)
+                    }
+                }
+            </div>
+        </div>
+        <div class="title-edit">
+            <div class="title-label">Title</div>
+            <input id="subjectTitle" class="title-input" type="text" data-type="subject" value="@Model.Settings.SelectedSubject.Title" />
+            <button class="button-save" data-type="subject">Save</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    if (typeof settingsObj !== "undefined") {
+        settingsObj["SelectedSubject"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedSubject));
+        LMS();
+    }
+</script>

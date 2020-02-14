@@ -6,31 +6,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/jqueryUi")
     @Scripts.Render("~/bundles/jquery")
 </head>
 <body>
     <form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form>
     @if (Request.IsAuthenticated)
     {
-        <div class="site-nav">
-            <button id="entities" class="site-nav-btn" data-location="/Entity/Search">Entities</button>
-            <button id="Study" class="site-nav-btn" data-location="/Study">Study</button>
+    <div class="site-nav-bar">
+        <button id="LMS" class="site-nav tab" data-location="/LMS">LMS</button>
+        <button class="site-nav tab">Tasks</button>
+        <button class="site-nav tab">Inventory</button>
+        <button class="site-nav tab">Finance</button>
+        <button class="site-nav tab">Health</button>
 
-            <button id="logout" style="float:right;">LogOut</button>
-        </div>
+        <button id="logout" class="log-out">Log Out</button>
+    </div>
         <div>
             @RenderBody()
         </div>
     }
     else
     {
-        <div class="site-nav">
-            <button id="login" class="site-nav-btn" data-location="/Account/Login">LogIn</button>
+        <div class="site-nav-bar">
+            <button id="login" class="site-nav log-in" data-location="/Account/Login">LogIn</button>
         </div>
         <div>
             @RenderBody()
         </div>
     }
+    <div id="inputValidation" class="hide"></div>
 </body>
 @Scripts.Render("~/bundles/main")
 </html>

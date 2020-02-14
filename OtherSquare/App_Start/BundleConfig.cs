@@ -11,7 +11,8 @@ namespace OtherSquare
             #region Scripts
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                "~/Scripts/jquery-{version}.js"));
+                "~/Scripts/jquery-{version}.js",
+                "~/Scripts/jquery-ui-{version}.js"));
 
             //bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
             //    "~/Scripts/jquery.validate*"));
@@ -19,8 +20,12 @@ namespace OtherSquare
             bundles.Add(new ScriptBundle("~/bundles/main").Include(
                 "~/Scripts/OtherSquare/main.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/study").Include(
-                "~/Scripts/OtherSquare/study.js"));
+            bundles.Add(new ScriptBundle("~/bundles/lms").Include(
+                "~/Scripts/OtherSquare/lms.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/moment").Include(
+                "~/Scripts/moment.js"
+                ));
 
             #endregion
 
@@ -28,6 +33,9 @@ namespace OtherSquare
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/jqueryUi").Include(
+                "~/Content/themes/base/jquery-ui.css"));
 
             #endregion
         }

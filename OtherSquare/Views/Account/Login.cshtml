@@ -1,6 +1,6 @@
 ﻿@model OtherSquare.ViewModels.LoginViewModel
 
-<div class="page-section">
+<div class="area-container">
     @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { role = "form" }))
     {
         @Html.AntiForgeryToken()
