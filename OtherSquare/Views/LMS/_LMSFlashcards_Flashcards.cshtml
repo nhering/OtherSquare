@@ -55,6 +55,7 @@
 <script>
     if (typeof settingsObj !== "undefined") {
         settingsObj["SelectedFlashcard"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedFlashcard));
+        logger.log("PartialView Flashcards loaded. settingsObj = " + JSON.stringify(settingsObj));
         LMS();
     }
 </script>

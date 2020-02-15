@@ -70,6 +70,12 @@ textarea {
     display: none;
 }
 
+.disabled {
+    cursor: default;
+    color: #efefef;
+    pointer-events: none;
+}
+
 /*#endregion*/
 
 /*#region Site*/

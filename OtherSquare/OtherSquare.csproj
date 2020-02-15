@@ -317,6 +317,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\OtherSquare\logger.js" />
     <Content Include="Scripts\OtherSquare\main.js" />
     <Content Include="Scripts\OtherSquare\random.js" />
     <Content Include="Scripts\OtherSquare\lms.js" />

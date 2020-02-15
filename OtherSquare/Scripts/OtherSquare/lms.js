@@ -2,6 +2,7 @@
  * Clears existing event listeners (to avoid duplicates) and recreates event listeners for the form elements in the LMS area.
  */
 var LMS = function () {
+    logger.debug("LMS " + JSON.stringify(settingsObj));
     //$('.area-nav').unbind('click');
     //$('.area-nav').click(function () {
     //    window.location = $(this).data("location");
@@ -15,6 +16,7 @@ var LMS = function () {
 
     $('.button-new').unbind('click');
     $('.button-new').click(function () {
+        logger.debug(".button-new " + JSON.stringify(settingsObj));
         let type = $(this).data("type");
         settingsObj["SelectedFlashcard"] = "";
         if (type === "category" || type === "subject") {
@@ -24,14 +26,15 @@ var LMS = function () {
             settingsObj["SelectedSubject"] = "";
         }
         SaveSettings(function () {
-            let fla = type.tolowercase() === "flashcard" ? function () { $("#" + type + "Title").focus(); } : "undefined";
+            let focus = function () { $("#" + type + "Title").focus(); };
+            let fla = type.tolowercase() === "flashcard" ? focus : "undefined";
             LoadPartialView("GetFlashcardPartial", "flashcards", fla);
             if (type === "category" || type === "subject") {
-                let cat = type.tolowercase() === "category" ? function () { $("#" + type + "Title").focus(); } : "undefined";
+                let cat = type.tolowercase() === "category" ? focus : "undefined";
                 LoadPartialView("GetCategoryPartial", "categories", cat);
             }
             if (type === "subject") {
-                let sub = type.tolowercase() === "subject" ? function () { $("#" + type + "Title").focus(); } : "undefined";
+                let sub = type.tolowercase() === "subject" ? focus : "undefined";
                 LoadPartialView("GetSubjectPartial", "subjects", sub);
             }
         });
@@ -40,7 +43,7 @@ var LMS = function () {
     $('.setting').unbind('click');
     $('.setting').click(function () {
         if ($(this).data("behavior") !== "click") return;
-        console.log(".setting.click()");
+        logger.debug(".setting.click()");
         let name = $(this).attr("name");
         switch (name) {
             case "SettingsAccordionExpanded":
@@ -89,7 +92,7 @@ var LMS = function () {
     $('.setting').unbind('change');
     $('.setting').change(function () {
         if ($(this).data("behavior") !== "change") return;
-        console.log(".setting.change()");
+        logger.debug(".setting.change()");
         let name = $(this).attr("name");
         let value;
         switch (name) {
@@ -127,10 +130,10 @@ var LMS = function () {
 };
 
 var InitializeDateSettings = function () {
-    console.log("initializeDateSettings");
+    logger.debug("initializeDateSettings");
     let begin = moment.utc($("#BeginDate").val()).format('MM/DD/YYYY');
     let end = moment.utc($("#EndDate").val()).format('MM/DD/YYYY');
-    console.log("Begin " + begin);
+    logger.debug("Begin " + begin);
     $("#BeginDate").val(begin);
     $("#EndDate").val(end);
 };
@@ -159,19 +162,26 @@ var DefaultDateRange = function () {
 };
 
 var InitializeSectionControls = function () {
-    let newBtns = document.querySelectorAll()
     if (settingsObj["SelectedSubject"]["SubjectGuid"] === Guid.empty) {
-        console.log("InitializeSectionControls SubjectGuid");
-        // Lock the category and flashcard sections
-        //  get the .button-new & data-type elements and add the 'disabled' class
+        logger.debug("InitializeSectionControls SubjectGuid");
+        $(".category").each(function () {
+            $(this).addClass("disabled");
+        });
+        $(".flashcard").each(function () {
+            $(this).addClass("disabled");
+        });
     } else if (settingsObj["SelectedCategory"]["CategoryGuid"] === Guid.empty) {
-        console.log("InitializeSectionControls CategoryGuid");
-        // Lock the flashcard section
+        logger.debug("InitializeSectionControls CategoryGuid");
+        $(".flashcard").each(function () {
+            $(this).addClass("disabled");
+        });
     }
 };
 
+
+
 var LoadPartialView = function (endpoint, sectionId, success, error) {
-    console.log("loadPartialView called: " + endpoint);
+    logger.debug("loadPartialView called: " + endpoint);
     let url = redirectUrl + "/" + endpoint;
     data = {
         RedirectURL: "/" + redirectUrl,
@@ -186,20 +196,21 @@ var LoadPartialView = function (endpoint, sectionId, success, error) {
             if (typeof success !== "undefined") success();
         },
         error: function () {
-            console.log("loadPartialView failed for " + sectionId);
+            logger.error("loadPartialView failed for " + sectionId);
             if (typeof error !== "undefined") error();
         }
     });
 };
 
 var SaveObject = function (type) {
-    console.log("SaveObject called");
+    logger.debug("SaveObject called\ntype: " + type);
+    logger.debug(JSON.stringify(settingsObj));
     $.ajax({
         url: "api/LMS/Save" + ToProperCase(type),
         type: "POST",
         data: settingsObj["Selected" + ToProperCase(type)],
         success: function (response) {
-            console.log("SaveObject success: " + JSON.stringify(response));
+            logger.debug("SaveObject success: " + JSON.stringify(response));
             let val = InputValidation.fromJson(response);
             if (val.cssClass === "") {
                 settingsObj["Selected" + type] = val.object;
@@ -216,7 +227,7 @@ var SaveObject = function (type) {
             }
         },
         error: function (response) {
-            console.log("SaveObject error: " + JSON.stringify(response));
+            logger.error("SaveObject error: " + JSON.stringify(response));
         }
     });
 };

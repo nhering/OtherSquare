@@ -33,7 +33,7 @@ namespace OtherSquare.ViewModels
             string msgHtml = "";
             foreach (string m in message)
             {
-                msgHtml += $"{m}<br/>";
+                msgHtml += $"{m}";
             }
             return new InputValidation()
             {

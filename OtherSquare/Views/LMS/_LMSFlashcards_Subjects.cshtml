@@ -44,7 +44,12 @@
 
 <script>
     if (typeof settingsObj !== "undefined") {
-        settingsObj["SelectedSubject"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedSubject));
-        LMS();
+        try {
+            settingsObj["SelectedSubject"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedSubject));
+            logger.debug("PartialView Subjects loaded. settingsObj = " + JSON.stringify(settingsObj));
+            LMS();
+        } catch (error) {
+            logger.error(error);
+        }
     }
 </script>

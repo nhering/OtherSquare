@@ -18,6 +18,7 @@ namespace OtherSquare
             //    "~/Scripts/jquery.validate*"));
 
             bundles.Add(new ScriptBundle("~/bundles/main").Include(
+                "~/Scripts/OtherSquare/logger.js",
                 "~/Scripts/OtherSquare/main.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/lms").Include(
