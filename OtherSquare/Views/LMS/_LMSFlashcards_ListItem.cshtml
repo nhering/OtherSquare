@@ -2,12 +2,12 @@
 @using Newtonsoft.Json;
 
 @{
-    string archived = Model.IsArchived ? " style=\"color:#999\"" : "";
+    string archived = Model.IsArchived ? "archived" : "";
     string selected = Model.Selected ? "checked" : "";
-    string selectedObject = Html.Raw(JsonConvert.SerializeObject(Model.SelectedObject)).ToString();
+    string obj = Html.Raw(JsonConvert.SerializeObject(Model.SelectedObject)).ToString();
 }
 
-<div class="item-list-item" @archived data-object="@selectedObject">
+<div class="item-list-item @archived" data-object="@obj" data-type="">
     <div>@Model.Title</div>
     @{
         if (Model.ScoreIsNA)

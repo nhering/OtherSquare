@@ -37,6 +37,16 @@ class InputValidation {
     }
 }
 
+class Loading {
+    static begin() {
+        logger.debug("loading started");
+    }
+
+    static end() {
+        logger.debug("loading ended");
+    }
+}
+
 $('#logout').click(function () {
     $.ajax({
         url: "/Account/LogOff",

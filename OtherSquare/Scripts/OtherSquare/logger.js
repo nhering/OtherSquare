@@ -18,8 +18,15 @@ class Logger {
      */
     constructor(level = 0) {
         this.logLevel = level;
-        this.prefix = "LOGGER." + Logger.levelToString(level) + "\n";
-        console.log("Logger set to " + Logger.levelToString(level));
+        //this.prefix = "LOGGER." + Logger.levelToString(level) + "\n";
+        //this.prefix = "Logger not initialized.";
+        if (level < LogLevel.OFF) {
+            console.log("Logger set to " + Logger.levelToString(level));
+        }
+    }
+
+    prefix(level) {
+        return "LOGGER." + Logger.levelToString(level) + "\n";
     }
 
     static levelToString(levelNumber) {
@@ -58,7 +65,7 @@ class Logger {
 
     log(message, lvl = 1) {
         if (lvl >= this.logLevel && lvl <= LogLevel.INFO) {
-            console.log(this.prefix + message + "\n\n");
+            console.log(this.prefix(lvl) + message + "\n\n");
         } else if (lvl === LogLevel.ERROR) {
             console.error("LOGGER.ERROR\n" + message + "\n");
         } else {

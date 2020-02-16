@@ -296,6 +296,11 @@ textarea {
     margin-top: 3px;
 }
 
+.item-list-item.archived {
+    /*TODO Apply a real style here*/
+    color: red;
+}
+
 .title-edit {
     display: grid;
     grid-template-columns: auto 1fr auto;

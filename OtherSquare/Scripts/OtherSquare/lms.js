@@ -8,37 +8,7 @@ var LMS = function () {
     //    window.location = $(this).data("location");
     //});
 
-    $('#applyDateRange').unbind('click');
-    $('#applyDateRange').click(function () { ApplyDateRange(); });
-    
-    $('#defaultDateRange').unbind('click');
-    $('#defaultDateRange').click(function () { DefaultDateRange(); });
-
-    $('.button-new').unbind('click');
-    $('.button-new').click(function () {
-        logger.debug(".button-new " + JSON.stringify(settingsObj));
-        let type = $(this).data("type");
-        settingsObj["SelectedFlashcard"] = "";
-        if (type === "category" || type === "subject") {
-            settingsObj["SelectedCategory"] = "";
-        }
-        if (type === "subject") {
-            settingsObj["SelectedSubject"] = "";
-        }
-        SaveSettings(function () {
-            let focus = function () { $("#" + type + "Title").focus(); };
-            let fla = type.tolowercase() === "flashcard" ? focus : "undefined";
-            LoadPartialView("GetFlashcardPartial", "flashcards", fla);
-            if (type === "category" || type === "subject") {
-                let cat = type.tolowercase() === "category" ? focus : "undefined";
-                LoadPartialView("GetCategoryPartial", "categories", cat);
-            }
-            if (type === "subject") {
-                let sub = type.tolowercase() === "subject" ? focus : "undefined";
-                LoadPartialView("GetSubjectPartial", "subjects", sub);
-            }
-        });
-    });
+    //#region Settings
 
     $('.setting').unbind('click');
     $('.setting').click(function () {
@@ -59,8 +29,6 @@ var LMS = function () {
                 settingsObj[name] = value;
                 SaveSettings(function () {
                     window.location = "/Home/Index";
-                }, function () {
-                    alert("ERROR: The server may not have saved the setting change.");
                 });
                 break;
             case "SubjectAccordionExpanded":
@@ -112,6 +80,46 @@ var LMS = function () {
         maxDate: new Date()
     });
 
+    $('#applyDateRange').unbind('click');
+    $('#applyDateRange').click(function () {
+        ApplyDateRange();
+    });
+    
+    $('#defaultDateRange').unbind('click');
+    $('#defaultDateRange').click(function () {
+        DefaultDateRange();
+    });
+
+    InitializeDateSettings();
+
+    //#endregion
+
+    $('.button-new').unbind('click');
+    $('.button-new').click(function () {
+        logger.debug(".button-new " + JSON.stringify(settingsObj));
+        let type = $(this).data("type");
+        settingsObj["SelectedFlashcard"] = "";
+        if (type === "category" || type === "subject") {
+            settingsObj["SelectedCategory"] = "";
+        }
+        if (type === "subject") {
+            settingsObj["SelectedSubject"] = "";
+        }
+        SaveSettings(function () {
+            let focus = function () { $("#" + type + "Title").focus(); };
+            let fla = type.toLowerCase() === "flashcard" ? focus : "undefined";
+            LoadPartialView("GetFlashcardPartial", "flashcards", fla);
+            if (type === "category" || type === "subject") {
+                let cat = type.toLowerCase() === "category" ? focus : "undefined";
+                LoadPartialView("GetCategoryPartial", "categories", cat);
+            }
+            if (type === "subject") {
+                let sub = type.toLowerCase() === "subject" ? focus : "undefined";
+                LoadPartialView("GetSubjectPartial", "subjects", sub);
+            }
+        });
+    });
+
     $('.button-save').unbind('click');
     $('.button-save').click(function () {
         let type = $(this).data("type");
@@ -124,7 +132,21 @@ var LMS = function () {
         settingsObj["Selected" + ToProperCase(type)]["Title"] = $(this).val();
     });
 
-    InitializeDateSettings();
+    $('.item-list-item').each(function () {
+        let parentType = $(this).parent().data("type");
+        $(this).data("type", parentType);
+    });
+
+    $('.item-list-item').unbind("click");
+    $('.item-list-item').click(function () {
+        $('.item-list-item').each(function () {
+            $(this).removeClass("selected");
+        });
+        $(this).addClass("selected");
+        let type = $(this).data("type");
+        let obj = $(this).data("object");
+        SelectObject(type, obj);
+    });
 
     InitializeSectionControls();
 };
@@ -178,8 +200,6 @@ var InitializeSectionControls = function () {
     }
 };
 
-
-
 var LoadPartialView = function (endpoint, sectionId, success, error) {
     logger.debug("loadPartialView called: " + endpoint);
     let url = redirectUrl + "/" + endpoint;
@@ -203,8 +223,7 @@ var LoadPartialView = function (endpoint, sectionId, success, error) {
 };
 
 var SaveObject = function (type) {
-    logger.debug("SaveObject called\ntype: " + type);
-    logger.debug(JSON.stringify(settingsObj));
+    logger.debug("SaveObject called\ntype: " + type + "\n" + JSON.stringify(settingsObj));
     $.ajax({
         url: "api/LMS/Save" + ToProperCase(type),
         type: "POST",
@@ -215,19 +234,29 @@ var SaveObject = function (type) {
             if (val.cssClass === "") {
                 settingsObj["Selected" + type] = val.object;
                 LoadPartialView("Get" + ToProperCase(type) + "Partial", type.tolowercase());
-                //LoadPartialView("GetFlashcardPartial", "flashcards");
-                //if (type === "category" || type === "subject") {
-                //    LoadPartialView("GetCategoryPartial", "categories");
-                //}
-                //if (type === "subject") {
-                //    LoadPartialView("GetSubjectPartial", "subjects");
-                //}
             } else {
                 val.showValidation();
             }
         },
         error: function (response) {
             logger.error("SaveObject error: " + JSON.stringify(response));
+        }
+    });
+};
+
+var SelectObject = function (type, obj) {
+    Loading.begin();
+    settingsObj["Selected" + ToProperCase(type)] = obj;
+    SaveSettings(function () {
+        let fla = type.toLowerCase() === "flashcard" ? Loading.end : "undefined";
+        LoadPartialView("GetFlashcardPartial", "flashcards", fla);
+        if (type === "category" || type === "subject") {
+            let cat = type.toLowerCase() === "category" ? Loading.end : "undefined";
+            LoadPartialView("GetCategoryPartial", "categories", cat);
+        }
+        if (type === "subject") {
+            let sub = type.toLowerCase() === "subject" ? Loading.end : "undefined";
+            LoadPartialView("GetSubjectPartial", "subjects", sub);
         }
     });
 };
