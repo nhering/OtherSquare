@@ -40,10 +40,12 @@ class InputValidation {
 class Loading {
     static begin() {
         logger.debug("loading started");
+        $("#modal-overlay").removeClass("hide");
     }
 
     static end() {
         logger.debug("loading ended");
+        $("#modal-overlay").addClass("hide");
     }
 }
 
@@ -166,6 +168,12 @@ var ToProperCase = function (str) {
     first = first.toUpperCase();
     let returnValue = first + rest;
     return returnValue;
+};
+
+var ResolveToFunction = function (func) {
+    if (typeof func !== "function") {
+        logger.debug("Well that isn't even a function!\nHere, take a look at what it really is.\n" + JSON.stringify(func));
+    }
 };
 
 //#endregion

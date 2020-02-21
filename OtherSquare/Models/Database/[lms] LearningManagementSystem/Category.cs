@@ -30,14 +30,6 @@ namespace OtherSquare.Models
             this.IsSelected = false;
         }
 
-        //public Category(string title)
-        //{
-        //    this.CategoryGuid = Guid.NewGuid();
-        //    this.Title = title;
-        //    this.IsArchived = false;
-        //    this.IsSelected = false;
-        //}
-
         public Category(Guid subjectGuid, string categoryTitle)
         {
             this.CategoryGuid = Guid.NewGuid();
@@ -183,6 +175,20 @@ namespace OtherSquare.Models
                 //TODO Log exception
                 throw;
             }
+        }
+
+        public Category Copy()
+        {
+            return new Category()
+            {
+                SubjectGuid = this.SubjectGuid,
+                CategoryGuid = this.CategoryGuid,
+                Title = this.Title,
+                IsArchived = this.IsArchived,
+                IsSelected = this.IsSelected,
+                Subject = null,
+                Flashcards = null
+            };
         }
     }
 }

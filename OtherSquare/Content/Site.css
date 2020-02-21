@@ -66,16 +66,6 @@ textarea {
     min-height: 3em;
 }
 
-.hide {
-    display: none;
-}
-
-.disabled {
-    cursor: default;
-    color: #efefef;
-    pointer-events: none;
-}
-
 /*#endregion*/
 
 /*#region Site*/
@@ -172,11 +162,53 @@ textarea {
 }
 
 .item-list-item.selected {
+    border: 1px solid #a0b6bf;
     background-color: #e0f6ff;
 }
 
 .date-picker {
     height: calc(var(--font-size) * 1.6);
+}
+
+.hide {
+    display: none;
+}
+
+.disabled {
+    cursor: default;
+    color: #efefef;
+    pointer-events: none;
+}
+
+/*.progress:before {
+    content: "LOADING";
+    text-align: center;
+}*/
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255,255,255,0.5);
+    z-index: 10;
+}
+
+.modal {
+    width: 300px;
+    height: 200px;
+    line-height: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -150px;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 5px;
+    text-align: center;
+    font-size: 2em;
+    z-index: 11;
 }
 
 /*#endregion */

@@ -147,11 +147,11 @@ namespace OtherSquare.ViewModels
                     List<Category> Categories = new List<Category>();
                     if ((bool)this.Settings.IncludeArchive)
                     {
-                        Categories = db.Categories.ToList();
+                        Categories = db.Categories.Where(c => c.SubjectGuid == Settings.SelectedSubject.SubjectGuid).ToList();
                     }
                     else
                     {
-                        Categories = db.Categories.Where(c => c.IsArchived == false).ToList();
+                        Categories = db.Categories.Where(c => c.IsArchived == false && c.SubjectGuid == Settings.SelectedSubject.SubjectGuid).ToList();
                     }
 
                     foreach (Category c in Categories)
@@ -172,7 +172,7 @@ namespace OtherSquare.ViewModels
 
                         ListItemViewModel li = new ListItemViewModel()
                         {
-                            SelectedObject = c,
+                            SelectedObject = c.Copy(),
                             Guid = c.CategoryGuid,
                             Title = c.Title,
                             ScoreIsNA = scoreIsNa,
@@ -184,7 +184,7 @@ namespace OtherSquare.ViewModels
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
                 //TODO Log Error
                 throw;

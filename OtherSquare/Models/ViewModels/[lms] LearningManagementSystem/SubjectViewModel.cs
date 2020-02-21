@@ -165,7 +165,7 @@ namespace OtherSquare.ViewModels
 
                         ListItemViewModel li = new ListItemViewModel()
                         {
-                            SelectedObject = s,
+                            SelectedObject = s.Copy(),
                             Guid = s.SubjectGuid,
                             Title = s.Title,
                             ScoreIsNA = scoreIsNa,
@@ -176,7 +176,7 @@ namespace OtherSquare.ViewModels
                         this.SubjectList.Add(li);
                         if (s.SubjectGuid == this.Settings.SelectedSubject.SubjectGuid)
                         {
-                            this.Settings.SelectedSubject = s;
+                            this.Settings.SelectedSubject = s.Copy();
                         }
                     }
                 }

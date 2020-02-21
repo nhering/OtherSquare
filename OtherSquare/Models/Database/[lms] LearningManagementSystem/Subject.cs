@@ -166,5 +166,16 @@ namespace OtherSquare.Models
                 throw;
             }
         }
+
+        public Subject Copy()
+        {
+            return new Subject()
+            {
+                SubjectGuid = this.SubjectGuid,
+                Title = this.Title,
+                IsArchived = this.IsArchived,
+                IsSelected = this.IsSelected
+            };
+        }
     }
 }

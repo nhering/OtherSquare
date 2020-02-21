@@ -30,7 +30,7 @@ namespace OtherSquare.ViewModels
                     set = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
                 }
             }
-            catch
+            catch (Exception e)
             {
                 throw;
             }
@@ -60,7 +60,7 @@ namespace OtherSquare.ViewModels
                     set = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
                 }
             }
-            catch
+            catch (Exception e)
             {
                 throw;
             }
@@ -89,7 +89,7 @@ namespace OtherSquare.ViewModels
                     set = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
                 }
             }
-            catch
+            catch (Exception e)
             {
                 throw;
             }
@@ -118,7 +118,7 @@ namespace OtherSquare.ViewModels
                     set = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
                 }
             }
-            catch
+            catch (Exception e)
             {
                 throw;
             }

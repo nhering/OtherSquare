@@ -35,7 +35,12 @@
             @RenderBody()
         </div>
     }
-    <div id="inputValidation" class="hide"></div>
+    <div id="message-overlay" class="overlay hide">
+        <div class="message"></div>
+    </div>
+    <div id="modal-overlay" class="overlay hide">
+        <div class="modal">Loading</div>
+    </div>
 </body>
 @Scripts.Render("~/bundles/main")
 </html>

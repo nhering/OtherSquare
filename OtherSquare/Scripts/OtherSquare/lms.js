@@ -1,4 +1,14 @@
-﻿/**
+﻿class Category {
+    constructor(subjectGuid) {
+        this.CategoryGuid = Guid.empty;
+        this.Title = "";
+        this.IsArchived = false;
+        this.IsSelected = false;
+        this.SubjectGuid = subjectGuid;
+    }
+}
+
+/**
  * Clears existing event listeners (to avoid duplicates) and recreates event listeners for the form elements in the LMS area.
  */
 var LMS = function () {
@@ -99,10 +109,12 @@ var LMS = function () {
         logger.debug(".button-new " + JSON.stringify(settingsObj));
         let type = $(this).data("type");
         settingsObj["SelectedFlashcard"] = "";
-        if (type === "category" || type === "subject") {
-            settingsObj["SelectedCategory"] = "";
+        if (type === "category") {
+            alert(new Category(settingsObj["SelectedSubject"]["SubjectGuid"]));
+            settingsObj["SelectedCategory"] = new Category(settingsObj["SelectedSubject"]["SubjectGuid"]);
         }
         if (type === "subject") {
+            settingsObj["SelectedCategory"] = "";
             settingsObj["SelectedSubject"] = "";
         }
         SaveSettings(function () {
@@ -135,14 +147,11 @@ var LMS = function () {
     $('.item-list-item').each(function () {
         let parentType = $(this).parent().data("type");
         $(this).data("type", parentType);
+        $(this).removeClass("selected");
     });
 
     $('.item-list-item').unbind("click");
     $('.item-list-item').click(function () {
-        $('.item-list-item').each(function () {
-            $(this).removeClass("selected");
-        });
-        $(this).addClass("selected");
         let type = $(this).data("type");
         let obj = $(this).data("object");
         SelectObject(type, obj);
@@ -183,6 +192,12 @@ var DefaultDateRange = function () {
     ApplyDateRange();
 };
 
+
+
+
+
+
+
 var InitializeSectionControls = function () {
     if (settingsObj["SelectedSubject"]["SubjectGuid"] === Guid.empty) {
         logger.debug("InitializeSectionControls SubjectGuid");
@@ -213,7 +228,9 @@ var LoadPartialView = function (endpoint, sectionId, success, error) {
         data: data,
         success: function (response) {
             $('#' + sectionId).html(response);
-            if (typeof success !== "undefined") success();
+            //if (typeof success !== "undefined") success();
+            //if (typeof success !== "undefined") alert(success);
+            if (success !== "undefined") { success(); }
         },
         error: function () {
             logger.error("loadPartialView failed for " + sectionId);
@@ -244,19 +261,74 @@ var SaveObject = function (type) {
     });
 };
 
+var SelectSubject = function () {
+
+};
+
 var SelectObject = function (type, obj) {
     Loading.begin();
     settingsObj["Selected" + ToProperCase(type)] = obj;
     SaveSettings(function () {
-        let fla = type.toLowerCase() === "flashcard" ? Loading.end : "undefined";
+        let fla = type.toLowerCase() === "flashcard" ? Loading.end() : "undefined";
         LoadPartialView("GetFlashcardPartial", "flashcards", fla);
         if (type === "category" || type === "subject") {
-            let cat = type.toLowerCase() === "category" ? Loading.end : "undefined";
+            let cat = type.toLowerCase() === "category" ? Loading.end() : "undefined";
             LoadPartialView("GetCategoryPartial", "categories", cat);
         }
         if (type === "subject") {
-            let sub = type.toLowerCase() === "subject" ? Loading.end : "undefined";
+            let sub = type.toLowerCase() === "subject" ? Loading.end() : "undefined";
             LoadPartialView("GetSubjectPartial", "subjects", sub);
         }
     });
 };
+
+
+
+
+//## For the "NEW" buttons
+//ClearSubjectPartial()
+//  Set settings subjectguid to empty
+//ClearCategoryPartial()
+//  Set settings categoryguid to empty
+//ClearFlashcardPartial()
+//  Set settings flashcardguid to empty
+//Set focus to whichever one was selected
+
+
+//## For saving a subject
+//Need:
+//  The subject guid (even if empty)
+//  The subject title
+//  Selected category guid (even if empty)
+//  Selected flashcard guid (even if empty)
+
+
+//## For saving a category
+//Need:
+//  The subject guid (Can not be empty)
+//  The category guid (even if empty)
+//  The category title
+//  Selected flashcard guid (even if empty)
+
+
+//## For saving a flashcard
+//Need:
+//  The category guid (Can not be empty)
+//  The flashcard guid (even if empty)
+//  The flashcard title
+//  The flashcard question
+//  The flashcard answer
+
+
+//## For reloading the page
+//Need:
+//  Selected subject guid
+//  Selected category guid
+//  Selected flashcard guid
+
+
+//## For setting the controls on load/reload
+//If the selected subject guid is empty
+//  Lock the "NEW" and "SAVE" button for the category and flashcard
+//If the selected subject guid is empty
+//  Lock the "NEW" and "SAVE" button for the flashcard
