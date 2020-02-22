@@ -1,4 +1,5 @@
-﻿class Category {
+﻿//REMOVE
+class Category {
     constructor(subjectGuid) {
         this.CategoryGuid = Guid.empty;
         this.Title = "";
@@ -8,18 +9,12 @@
     }
 }
 
-/**
- * Clears existing event listeners (to avoid duplicates) and recreates event listeners for the form elements in the LMS area.
- */
+//CONSIDER MOVING CONTENTS OUT AND GETTING RID OF THIS WRAPPER FUNCTION
 var LMS = function () {
-    logger.debug("LMS " + JSON.stringify(settingsObj));
-    //$('.area-nav').unbind('click');
-    //$('.area-nav').click(function () {
-    //    window.location = $(this).data("location");
-    //});
-
     //#region Settings
 
+
+    //KEEP
     $('.setting').unbind('click');
     $('.setting').click(function () {
         if ($(this).data("behavior") !== "click") return;
@@ -67,6 +62,7 @@ var LMS = function () {
         }
     });
 
+    //KEEP
     $('.setting').unbind('change');
     $('.setting').change(function () {
         if ($(this).data("behavior") !== "change") return;
@@ -85,16 +81,19 @@ var LMS = function () {
         }
     });
 
+    //KEEP
     $('.date-picker').datepicker({
         dateFormat: "mm/dd/yy",
         maxDate: new Date()
     });
 
+    //KEEP
     $('#applyDateRange').unbind('click');
     $('#applyDateRange').click(function () {
         ApplyDateRange();
     });
-    
+
+    //KEEP
     $('#defaultDateRange').unbind('click');
     $('#defaultDateRange').click(function () {
         DefaultDateRange();
@@ -104,6 +103,7 @@ var LMS = function () {
 
     //#endregion
 
+    //REPLACE
     $('.button-new').unbind('click');
     $('.button-new').click(function () {
         logger.debug(".button-new " + JSON.stringify(settingsObj));
@@ -132,24 +132,28 @@ var LMS = function () {
         });
     });
 
+    //REPLACE
     $('.button-save').unbind('click');
     $('.button-save').click(function () {
         let type = $(this).data("type");
         SaveObject(type);
     });
 
+    //REPLACE
     $('.title-input').unbind('change');
     $('.title-input').change(function () {
         let type = $(this).data("type");
         settingsObj["Selected" + ToProperCase(type)]["Title"] = $(this).val();
     });
 
+    //KEEP
     $('.item-list-item').each(function () {
         let parentType = $(this).parent().data("type");
         $(this).data("type", parentType);
         $(this).removeClass("selected");
     });
 
+    //REPLACE
     $('.item-list-item').unbind("click");
     $('.item-list-item').click(function () {
         let type = $(this).data("type");
@@ -157,9 +161,11 @@ var LMS = function () {
         SelectObject(type, obj);
     });
 
+    //REPLACE
     InitializeSectionControls();
 };
 
+//KEEP
 var InitializeDateSettings = function () {
     logger.debug("initializeDateSettings");
     let begin = moment.utc($("#BeginDate").val()).format('MM/DD/YYYY');
@@ -169,6 +175,7 @@ var InitializeDateSettings = function () {
     $("#EndDate").val(end);
 };
 
+//KEEP
 var ApplyDateRange = function () {
     let begin = $('#BeginDate').val();
     let end = $('#EndDate').val();
@@ -185,6 +192,7 @@ var ApplyDateRange = function () {
     }
 };
 
+//KEEP
 var DefaultDateRange = function () {
     let begin = moment(new Date().toLocaleDateString()).subtract(6, 'months');
     $('#BeginDate').val(new Date(begin).toLocaleDateString());
@@ -192,12 +200,7 @@ var DefaultDateRange = function () {
     ApplyDateRange();
 };
 
-
-
-
-
-
-
+//REPLACE
 var InitializeSectionControls = function () {
     if (settingsObj["SelectedSubject"]["SubjectGuid"] === Guid.empty) {
         logger.debug("InitializeSectionControls SubjectGuid");
@@ -215,6 +218,7 @@ var InitializeSectionControls = function () {
     }
 };
 
+//REPLACE
 var LoadPartialView = function (endpoint, sectionId, success, error) {
     logger.debug("loadPartialView called: " + endpoint);
     let url = redirectUrl + "/" + endpoint;
@@ -239,6 +243,7 @@ var LoadPartialView = function (endpoint, sectionId, success, error) {
     });
 };
 
+//REPLACE
 var SaveObject = function (type) {
     logger.debug("SaveObject called\ntype: " + type + "\n" + JSON.stringify(settingsObj));
     $.ajax({
@@ -261,10 +266,12 @@ var SaveObject = function (type) {
     });
 };
 
+//REPLACE
 var SelectSubject = function () {
 
 };
 
+//REPLACE
 var SelectObject = function (type, obj) {
     Loading.begin();
     settingsObj["Selected" + ToProperCase(type)] = obj;
@@ -285,50 +292,129 @@ var SelectObject = function (type, obj) {
 
 
 
-//## For the "NEW" buttons
-//ClearSubjectPartial()
-//  Set settings subjectguid to empty
-//ClearCategoryPartial()
-//  Set settings categoryguid to empty
-//ClearFlashcardPartial()
-//  Set settings flashcardguid to empty
-//Set focus to whichever one was selected
+//##btn NewSubject()
+//-ClearSubjectSettings()
+//-ClearCategorySettings()
+//-ClearCategoryPartial()
+//-LockCategoryPartial()
+//-ClearFlashcardSettings()
+//-ClearFlashcardPartial()
+//-LockFlashcardPartial()
+//-SaveSettings()
+//-Focus(SubjectTitleInput)
+
+//##btn NewCategory()
+//-ClearCategorySettings()
+//-ClearFlashcardSettings()
+//-ClearFlashcardPartial()
+//-LockFlashcardPartial()
+//-SaveSettings()
+//-Focus(CategoryTitleInput)
+
+//##btn NewFlashcard()
+//-ClearFlashcardPartial()
+//-SaveSettings()
+//-Focus(FlashcardTitleInput)
 
 
-//## For saving a subject
-//Need:
-//  The subject guid (even if empty)
-//  The subject title
-//  Selected category guid (even if empty)
-//  Selected flashcard guid (even if empty)
+//## ClearSubjectSettings()
+//-set settings object selected subject guid to Guid.empty()
+//-set settings object selected subject title to ""
+
+//## ClearCategorySettings()
+//-set settings object selected category guid to Guid.empty()
+//-set settings object selected category title to ""
+
+//## ClearCategoryPartial()
+//-set inner html of category list to ""
+//-set category title input value to ""
+
+//## ClearFlashcardSettings()
+//-set selected flashcard guid to Guid.empty()
+//-set selected flashcard title to ""
+//-set selected flashcard question to ""
+//-set selected flashcard answer to ""
+
+//## ClearFlashcardPartial()
+//-set settings object selected flashcard guid to Guid.empty()
+//-set settings object selected flashcard title to ""
+//-set settings object selected flashcard question to ""
+//-set settings object selected flashcard answer to ""
 
 
-//## For saving a category
-//Need:
-//  The subject guid (Can not be empty)
-//  The category guid (even if empty)
-//  The category title
-//  Selected flashcard guid (even if empty)
+//## LockCategoryPartial()
+//-Set new category button to disabled
+//-set category title input to disabled
+//-set save category button to diabled
+
+//## LockFlashcardPartial()
+//-Set new flashcard button to diabled
+//-Set flashcard title input to diabled
+//-Set save flashcard button to disabled
+//-Set flashcard question to disabled
+//-Set flashcard answer to disabled
 
 
-//## For saving a flashcard
-//Need:
-//  The category guid (Can not be empty)
-//  The flashcard guid (even if empty)
-//  The flashcard title
-//  The flashcard question
-//  The flashcard answer
+//## UnlockCategoryPartial()
+//-Set new category button to enabled
+//-set category title input to enabled
+//-set save category button to enabled
+
+//## UnlockFlashcardPartial()
+//-Set new flashcard button to enabled
+//-Set flashcard title input to enabled
+//-Set save flashcard button to enabled
+//-Set flashcard question to enabled
+//-Set flashcard answer to enabled
 
 
-//## For reloading the page
-//Need:
-//  Selected subject guid
-//  Selected category guid
-//  Selected flashcard guid
+//##btn SaveSubject()
+//-Update the settings object
+//--Set the selected subject guid and title
+//-Send user settings to mvc controller: SaveSubject
+//--Controller sends settings object to viewmodel
+//--Viewmodel creates or updates subject as appropriate and saves settings if it succeeds
+//-If everything goes well, reload the page with the newly saved settings
+//--If not, server sends validation object back
+
+//##btn SaveCategory()
+//-Update the settings object
+//--Set the selected category guid and title
+//-Send user settings to mvc controller: SaveCategory
+//--Controller sends settings object to viewmodel
+//--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
+//-If everything goes well, reload the page with the newly saved settings
+//--If not, server sends validation object back
+
+//##btn SaveFlashcard()
+//-Update the settings object
+//--Set the selected flashcard guid, title, question, and answer
+//-Send user settings to mvc controller: SaveFlashcard
+//--Controller sends settings object to viewmodel
+//--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
+//-If everything goes well, reload the page with the newly saved settings
+//--If not, server sends validation object back
 
 
-//## For setting the controls on load/reload
-//If the selected subject guid is empty
-//  Lock the "NEW" and "SAVE" button for the category and flashcard
-//If the selected subject guid is empty
-//  Lock the "NEW" and "SAVE" button for the flashcard
+//## InitializeSectionControls()
+//-If the selected subject guid == empty
+//--LockCategoryPartial()
+//--LockFlashcardPartial()
+//-Elseif the selected category guid == empty
+//--LockFlashcardPartial()
+
+
+//## SelectSubjectItem()
+//-Update the settings object
+//-SaveSettings()
+//-Reload page
+
+//## SelectCategoryItem()
+//-Update the settings object
+//-SaveSettings()
+//-Reload page
+
+//## SelectFlashcardItem()
+//-Update the settings object
+//-SaveSettings()
+//-Reload page
