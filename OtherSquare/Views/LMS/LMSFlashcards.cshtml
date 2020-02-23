@@ -23,14 +23,9 @@
 
 <script>
     $('document').ready(function () {
-        try {
-            settingsObj = @Html.Raw(JsonConvert.SerializeObject(Model.Settings));
-            LMS();
-            SetNavBreadcrumbs(["LMS", "LMS_Flashcards"]);
-            logger.debug("document ready: " + JSON.stringify(settingsObj));
-            redirectUrl = "LMS";
-        } catch (error) {
-            logger.error(error);
-        }
+        settingsObj = @Html.Raw(JsonConvert.SerializeObject(Model.Settings));
+        redirectUrl = "LMS";
+        SetNavBreadcrumbs(["LMS", "LMS_Flashcards"]);
+        LMS();
     });
 </script>

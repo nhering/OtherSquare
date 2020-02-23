@@ -23,6 +23,10 @@ namespace OtherSquare.ViewModels
             }
             set
             {
+                if (value == null)
+                {
+                    value = new NAV_FlashcardSettings();
+                }
                 _settings = value;
             }
         }
@@ -43,23 +47,6 @@ namespace OtherSquare.ViewModels
                 _subjectList = value;
             }
         }
-        
-        //private InputValidation _title_Validation { get; set; }
-        //public InputValidation Title_Validation
-        //{
-        //    get
-        //    {
-        //        if (_title_Validation == null)
-        //        {
-        //            _title_Validation = InputValidation.Empty();
-        //        }
-        //        return _title_Validation;
-        //    }
-        //    set
-        //    {
-        //        _title_Validation = value;
-        //    }
-        //}
 
         #endregion
 
@@ -70,10 +57,6 @@ namespace OtherSquare.ViewModels
             try
             {
                 this.Settings = settings;
-                if (this.Settings.SelectedSubject == null)
-                {
-                    this.Settings.SelectedSubject = new Subject();
-                }
                 this.buildSubjectList();
             }
             catch
@@ -165,7 +148,7 @@ namespace OtherSquare.ViewModels
 
                         ListItemViewModel li = new ListItemViewModel()
                         {
-                            SelectedObject = s.Copy(),
+                            //SelectedObject = s.Copy(),
                             Guid = s.SubjectGuid,
                             Title = s.Title,
                             ScoreIsNA = scoreIsNa,
@@ -174,9 +157,9 @@ namespace OtherSquare.ViewModels
                             Selected = s.IsSelected
                         };
                         this.SubjectList.Add(li);
-                        if (s.SubjectGuid == this.Settings.SelectedSubject.SubjectGuid)
+                        if (s.SubjectGuid == this.Settings.SelectedSubjectGuid)
                         {
-                            this.Settings.SelectedSubject = s.Copy();
+                            this.Settings.SelectedSubjectTitle = s.Title;
                         }
                     }
                 }
@@ -188,39 +171,58 @@ namespace OtherSquare.ViewModels
             }
         }
 
-        public static InputValidation SaveSubject(Subject subject)
+        public static InputValidation SaveSubject(UserSetting userSetting)
         {
-            if (subject.IsValid())
+            NAV_FlashcardSettings fSet = null;
+            Guid uiSubjectGuid = Guid.Empty;
+            string uiTitle = null;
+            Subject dbSubject = null;
+            try
             {
-                if (subject.IsNew())
+                fSet = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
+                uiSubjectGuid = fSet.SelectedSubjectGuid;
+                uiTitle = fSet.SelectedSubjectTitle.Trim();
+                if (string.IsNullOrEmpty(uiTitle)) return InputValidation.Error("Title can not be empty.");
+                using (OtherSquareDbContext db = new OtherSquareDbContext())
                 {
-                    if (subject.TitleExistsInDatabase())
+                    if (uiSubjectGuid != Guid.Empty && uiSubjectGuid != null) //Then there should be a record in the db that we can update
                     {
-                        InputValidation val = InputValidation.Alert("A subject with that title already exitst. (It could be archived)");
-                        val.Object = subject;
-                        return val;
+                        dbSubject = db.Subjects.FirstOrDefault(s => s.SubjectGuid == uiSubjectGuid);
+                        if (dbSubject == null)
+                        {
+                            //Something is wrong. Why didn't we find a record?
+                            throw new Exception($"The Subject with the Guid {uiSubjectGuid.ToString()} was not found in the database.");
+                        }
+                        dbSubject.Title = uiTitle;
+                        db.SaveChanges();
+
+                        //update the user setting and save it
+                        fSet.SelectedSubjectTitle = uiTitle;
+                        userSetting.SettingsJSON = JsonConvert.SerializeObject(fSet);
+                        userSetting.SaveSettings();
+
+                        return InputValidation.Success("Subject successfully updated.");
                     }
                     else
                     {
-                        subject.Create();
-                        InputValidation val = InputValidation.Empty();
-                        val.Object = subject;
-                        return val;
+                        dbSubject = db.Subjects.FirstOrDefault(s => s.Title.ToLower() == uiTitle.ToLower());
+
+                        if (dbSubject != null)
+                        {
+                            return InputValidation.Alert($"A subject with the title {uiTitle} already exitst. (It could be archived)");
+                        }
+
+                        Subject newSubject = new Subject(uiTitle);
+                        db.Subjects.Add(newSubject);
+                        db.SaveChanges();
+                        return InputValidation.Success("Subject successfully created.");
                     }
                 }
-                else
-                {
-                    subject.Update();
-                    InputValidation val = InputValidation.Empty();
-                    val.Object = subject;
-                    return val;
-                }
-            }
-            else
+            } 
+            catch(Exception e)
             {
-                InputValidation val = InputValidation.Alert(subject.ValidationErrors());
-                val.Object = subject;
-                return val;
+                //TODO do something with the fSet here?
+                return InputValidation.Error(e.Message);
             }
         }
 

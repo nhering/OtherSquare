@@ -15,52 +15,55 @@ namespace OtherSquare.Models
         public string Title { get; set; }
         public string Question { get; set; }
         public string Answer { get; set; }
-        public bool IsArchived { get; set; } //TODO Remove this property from the model
+        //public bool IsArchived { get; set; }
 
         public Guid CategoryGuid { get; set; }
         public virtual Category Category { get; set; }
 
         public virtual ICollection<FlashCardAnswer> FlashcardAnswers { get; set; }
 
-        public FlashCard()
+        public FlashCard() { }
+
+        public FlashCard(Guid categoryGuid)
         {
-            this.FlashCardGuid = Guid.Empty;
+            this.FlashCardGuid = Guid.NewGuid();
             this.Title = "";
             this.Question = "";
             this.Answer = "";
+            this.CategoryGuid = categoryGuid;
         }
 
-        public void Save()
-        {
-            if (string.IsNullOrEmpty(this.Title)) return;
-            try
-            {
-                using (OtherSquareDbContext db = new OtherSquareDbContext())
-                {
-                    FlashCard dbFlashcard = db.FlashCards.FirstOrDefault(s => s.FlashCardGuid == this.FlashCardGuid);
-                    if (dbFlashcard == null)
-                    {
-                        dbFlashcard = new FlashCard()
-                        {
-                            FlashCardGuid = Guid.NewGuid(),
-                            Title = this.Title,
-                            Question = this.Question,
-                            Answer = this.Answer
-                        };
-                        db.FlashCards.Add(dbFlashcard);
-                    }
-                    else
-                    {
-                        dbFlashcard.Title = this.Title;
-                    }
-                    db.SaveChanges();
-                }
-            }
-            catch
-            {
-                //TODO Log exception
-                throw;
-            }
-        }
+        //public void Save()
+        //{
+        //    if (string.IsNullOrEmpty(this.Title)) return;
+        //    try
+        //    {
+        //        using (OtherSquareDbContext db = new OtherSquareDbContext())
+        //        {
+        //            FlashCard dbFlashcard = db.FlashCards.FirstOrDefault(s => s.FlashCardGuid == this.FlashCardGuid);
+        //            if (dbFlashcard == null)
+        //            {
+        //                dbFlashcard = new FlashCard()
+        //                {
+        //                    FlashCardGuid = Guid.NewGuid(),
+        //                    Title = this.Title,
+        //                    Question = this.Question,
+        //                    Answer = this.Answer
+        //                };
+        //                db.FlashCards.Add(dbFlashcard);
+        //            }
+        //            else
+        //            {
+        //                dbFlashcard.Title = this.Title;
+        //            }
+        //            db.SaveChanges();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        //TODO Log exception
+        //        throw;
+        //    }
+        //}
     }
 }

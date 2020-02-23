@@ -3,7 +3,7 @@
 @using Newtonsoft.Json;
 
 @{
-    if (Model.Settings.SelectedCategory == null) { Model.Settings.SelectedCategory = new OtherSquare.Models.Category(); };
+    //if (Model.Settings.SelectedCategory == null) { Model.Settings.SelectedCategory = new OtherSquare.Models.Category(); };
     string expandCollapse = Model.Settings.CategoryAccordionExpanded ? "expanded" : "collapsed";
     string unarchive = (bool)Model.Settings.IncludeArchive ? "" : "hide";
 }
@@ -14,9 +14,9 @@
             <span class="expand-collapse setting" data-behavior="click" name="CategoryAccordionExpanded">+/-</span>Categories
         </div>
         <div class="section-controls category-section @expandCollapse">
-            <button class="category">Archive Selected</button>
-            <button class="category unarchive @unarchive">Unarchive Selected</button>
-            <button class="category button-new" data-type="category">New</button>
+            <button>Archive Selected</button>
+            <button class="unarchive @unarchive">Unarchive Selected</button>
+            <button id="newCategory">New</button>
         </div>
     </div>
     <div class="section-content category-section @expandCollapse">
@@ -25,7 +25,7 @@
                 <div>Title</div>
                 <div>Score</div>
             </div>
-            <div class="item-list-content" data-type="category">
+            <div id="categoryList" class="item-list-content" data-type="category">
                 @{
                     foreach (ListItemViewModel i in Model.CategoryViewModel.CategoryList)
                     {
@@ -36,16 +36,16 @@
         </div>
         <div class="title-edit">
             <div class="title-label">Title</div>
-            <input id="categoryTitle" class="category title-input" type="text" data-type="category"/>
-            <button class="category button-save" data-type="category">Save</button>
+            <input id="categoryTitle" type="text" data-guid="@Model.Settings.SelectedCategoryGuid" value="@Model.Settings.SelectedCategoryTitle" />
+            <button id="saveCategory">Save</button>
         </div>
     </div>
 </div>
 
-<script>
+@*<script>
     if (typeof settingsObj !== "undefined") {
         settingsObj["SelectedCategory"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedCategory));
         logger.log("PartialView Categories loaded. settingsObj = " + JSON.stringify(settingsObj));
         LMS();
     }
-</script>
+</script>*@

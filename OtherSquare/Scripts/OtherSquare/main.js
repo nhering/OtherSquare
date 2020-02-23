@@ -170,10 +170,4 @@ var ToProperCase = function (str) {
     return returnValue;
 };
 
-var ResolveToFunction = function (func) {
-    if (typeof func !== "function") {
-        logger.debug("Well that isn't even a function!\nHere, take a look at what it really is.\n" + JSON.stringify(func));
-    }
-};
-
 //#endregion

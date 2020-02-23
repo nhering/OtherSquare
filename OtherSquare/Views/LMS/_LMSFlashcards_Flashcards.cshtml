@@ -3,7 +3,7 @@
 @using Newtonsoft.Json;
 
 @{
-    if (Model.Settings.SelectedFlashcard == null) { Model.Settings.SelectedFlashcard = new OtherSquare.Models.FlashCard(); };
+    //if (Model.Settings.SelectedFlashcard == null) { Model.Settings.SelectedFlashcard = new OtherSquare.Models.FlashCard(); };
     string expandCollapse = Model.Settings.FlashcardAccordionExpanded ? "expanded" : "collapsed";
 
 }
@@ -14,7 +14,7 @@
         </div>
         <div class="section-controls flashcard-section @expandCollapse">
             <button>Delete Selected</button>
-            <button class="button-new" data-type="flashcard">New</button>
+            <button id="newFlashcard">New</button>
         </div>
     </div>
     <div class="section-content flashcard-section @expandCollapse">
@@ -25,37 +25,37 @@
             </div>
             <div id="flashcardList" class="item-list-content" data-type="flashcard">
                 @{
-                    @*foreach (ListItemViewModel i in Model.FlashcardList)
+                    foreach (ListItemViewModel i in Model.FlashcardViewModel.FlashcardList)
                         {
                             @Html.Partial("_LMSFlashCards_ListItem", i)
-                        }*@
+                        }
                 }
             </div>
         </div>
         <div class="title-edit">
             <div class="title-label">Title</div>
-            <input id="flashcardTitle" class="title-input" type="text" value="@Model.Settings.SelectedFlashcard.Title" />
-            <button id="saveSubject" class="button-save" data-type="flashcard">Save</button>
+            <input id="flashcardTitle" type="text" value="@Model.Settings.SelectedFlashcardTitle" />
+            <button id="saveFlashcard">Save</button>
         </div>
         <div class="qa">
             <div class="q qa-label">Question:</div>
             <div class="a">
-                <textarea id="question" class="title-input">@Model.Settings.SelectedFlashcard.Question</textarea>
+                <textarea id="question">@Model.Settings.SelectedFlashcardQuestion</textarea>
             </div>
         </div>
         <div class="qa">
             <div class="q qa-label">Answer:</div>
             <div class="a">
-                <textarea id="answer" class="title-input">@Model.Settings.SelectedFlashcard.Answer</textarea>
+                <textarea id="answer">@Model.Settings.SelectedFlashcardAnswer</textarea>
             </div>
         </div>
     </div>
 </div>
 
-<script>
+@*<script>
     if (typeof settingsObj !== "undefined") {
         settingsObj["SelectedFlashcard"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedFlashcard));
         logger.log("PartialView Flashcards loaded. settingsObj = " + JSON.stringify(settingsObj));
         LMS();
     }
-</script>
+</script>*@

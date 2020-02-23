@@ -3,7 +3,7 @@
 @using Newtonsoft.Json;
 
 @{
-    if (Model.Settings.SelectedSubject == null) { Model.Settings.SelectedSubject = new OtherSquare.Models.Subject(); };
+    //if (Model.Settings.SelectedSubject == null) { Model.Settings.SelectedSubject = new OtherSquare.Models.Subject(); };
     string expandCollapse = Model.Settings.SubjectAccordionExpanded ? "expanded" : "collapsed";
     string unarchive = (bool)Model.Settings.IncludeArchive ? "" : "hide";
 }
@@ -16,7 +16,7 @@
         <div class="section-controls subject-section @expandCollapse">
             <button>Archive Selected</button>
             <button class="unarchive @unarchive">Unarchive Selected</button>
-            <button class="button-new" data-type="subject">New</button>
+            <button id="newSubject">New</button>
         </div>
     </div>
     <div class="section-content subject-section @expandCollapse">
@@ -36,13 +36,13 @@
         </div>
         <div class="title-edit">
             <div class="title-label">Title</div>
-            <input id="subjectTitle" class="title-input" type="text" data-type="subject" value="@Model.Settings.SelectedSubject.Title" />
-            <button class="button-save" data-type="subject">Save</button>
+            <input id="subjectTitle" class="title-input" type="text" value="@Model.Settings.SelectedSubjectTitle" />
+            <button id="saveSubject">Save</button>
         </div>
     </div>
 </div>
 
-<script>
+@*<script>
     if (typeof settingsObj !== "undefined") {
         try {
             settingsObj["SelectedSubject"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedSubject));
@@ -52,4 +52,4 @@
             logger.error(error);
         }
     }
-</script>
+</script>*@

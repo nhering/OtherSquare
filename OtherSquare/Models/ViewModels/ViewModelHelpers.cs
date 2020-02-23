@@ -86,7 +86,7 @@ namespace OtherSquare.ViewModels
     
     public class ListItemViewModel
     {
-        public Object SelectedObject { get; set; }
+        //public Object SelectedObject { get; set; }
         public Guid Guid { get; set; }
         public string Title { get; set; }
         public bool ScoreIsNA { get; set; }

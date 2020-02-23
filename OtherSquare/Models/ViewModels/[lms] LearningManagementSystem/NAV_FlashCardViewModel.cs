@@ -40,6 +40,7 @@ namespace OtherSquare.ViewModels
             this.FlashcardViewModel = new FlashcardViewModel(set);
         }
 
+        //REMOVE
         public static NAV_FlashCardViewModel GetSubjectViewModel(UserSetting userSetting)
         {
             NAV_FlashCardViewModel viewModel = new NAV_FlashCardViewModel();
@@ -69,6 +70,7 @@ namespace OtherSquare.ViewModels
             return viewModel;
         }
 
+        //REMOVE
         public static NAV_FlashCardViewModel GetCategoryViewModel(UserSetting userSetting)
         {
             NAV_FlashCardViewModel viewModel = new NAV_FlashCardViewModel();
@@ -98,6 +100,7 @@ namespace OtherSquare.ViewModels
             return viewModel;
         }
 
+        //REMOVE
         public static NAV_FlashCardViewModel GetFlashCardViewModel(UserSetting userSetting)
         {
             NAV_FlashCardViewModel viewModel = new NAV_FlashCardViewModel();
@@ -138,13 +141,21 @@ namespace OtherSquare.ViewModels
         public bool? IncludeArchive { get; set; }
 
         public bool SubjectAccordionExpanded { get; set; }
-        public Subject SelectedSubject { get; set; }
+        //public Subject SelectedSubject { get; set; }
+        public Guid SelectedSubjectGuid { get; set; }
+        public string SelectedSubjectTitle { get; set; }
 
         public bool CategoryAccordionExpanded { get; set; }
-        public Category SelectedCategory { get; set; }
+        //public Category SelectedCategory { get; set; }
+        public Guid SelectedCategoryGuid { get; set; }
+        public string SelectedCategoryTitle { get; set; }
 
         public bool FlashcardAccordionExpanded { get; set; }
-        public FlashCard SelectedFlashcard { get; set; }
+        //public FlashCard SelectedFlashcard { get; set; }
+        public Guid SelectedFlashcardGuid { get; set; }
+        public string SelectedFlashcardTitle { get; set; }
+        public string SelectedFlashcardQuestion { get; set; }
+        public string SelectedFlashcardAnswer { get; set; }
 
         public NAV_FlashcardSettings()
         {
@@ -154,13 +165,21 @@ namespace OtherSquare.ViewModels
             this.IncludeArchive = false;
 
             this.SubjectAccordionExpanded = true;
-            this.SelectedSubject = new Subject();
+            //this.SelectedSubject = new Subject();
+            this.SelectedSubjectGuid = Guid.Empty;
+            this.SelectedSubjectTitle = "";
 
             this.CategoryAccordionExpanded = true;
-            this.SelectedCategory = new Category();
+            //this.SelectedCategory = new Category();
+            this.SelectedCategoryGuid = Guid.Empty;
+            this.SelectedCategoryTitle = "";
 
             this.FlashcardAccordionExpanded = true;
-            this.SelectedFlashcard = new FlashCard();
+            //this.SelectedFlashcard = new FlashCard();
+            this.SelectedFlashcardGuid = Guid.Empty;
+            this.SelectedFlashcardTitle = "";
+            this.SelectedFlashcardQuestion = "";
+            this.SelectedFlashcardAnswer = "";
         }
     }
 }

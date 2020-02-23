@@ -36,15 +36,15 @@ button:focus {
     border: solid 1px var(--color_hover);
 }
 
-button:disabled {
+/*button:disabled {
     color: #efefef;
     border: solid 1px #efefef;
-}
+}*/
 
 input, log-in, log-out {
     padding: 0 var(--site-padding);
     border-radius: 3px;
-    border: solid 1px #BBB;
+    border: solid 1px #808080;
     /*height: calc(var(--font-size) * 1.6);*/
 }
 
@@ -148,8 +148,7 @@ textarea {
     height: calc(var(--font-size) * 1.6);
     border: 1px solid rgba(0,0,0,0);
     border-radius: 3px;
-    margin-right: 2px;
-    margin-left: 2px;
+    margin:2px;
     cursor: pointer;
 }
 
@@ -176,7 +175,8 @@ textarea {
 
 .disabled {
     cursor: default;
-    color: #efefef;
+    color: #BBB;
+    background-color: #FFF;
     pointer-events: none;
 }
 
@@ -342,11 +342,6 @@ textarea {
 .title-label {
     padding-top: calc(var(--site-padding) / 2);
     font-weight: 600;
-}
-
-.title-input {
-    border-radius: 3px;
-    border: 1px solid #999;
 }
 
 .qa {

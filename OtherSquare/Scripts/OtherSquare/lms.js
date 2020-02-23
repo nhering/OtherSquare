@@ -1,18 +1,6 @@
-﻿//REMOVE
-class Category {
-    constructor(subjectGuid) {
-        this.CategoryGuid = Guid.empty;
-        this.Title = "";
-        this.IsArchived = false;
-        this.IsSelected = false;
-        this.SubjectGuid = subjectGuid;
-    }
-}
-
-//CONSIDER MOVING CONTENTS OUT AND GETTING RID OF THIS WRAPPER FUNCTION
+﻿//CONSIDER MOVING CONTENTS OUT AND GETTING RID OF THIS WRAPPER FUNCTION
 var LMS = function () {
     //#region Settings
-
 
     //KEEP
     $('.setting').unbind('click');
@@ -99,70 +87,61 @@ var LMS = function () {
         DefaultDateRange();
     });
 
+    //KEEP
     InitializeDateSettings();
 
     //#endregion
 
-    //REPLACE
-    $('.button-new').unbind('click');
-    $('.button-new').click(function () {
-        logger.debug(".button-new " + JSON.stringify(settingsObj));
-        let type = $(this).data("type");
-        settingsObj["SelectedFlashcard"] = "";
-        if (type === "category") {
-            alert(new Category(settingsObj["SelectedSubject"]["SubjectGuid"]));
-            settingsObj["SelectedCategory"] = new Category(settingsObj["SelectedSubject"]["SubjectGuid"]);
-        }
-        if (type === "subject") {
-            settingsObj["SelectedCategory"] = "";
-            settingsObj["SelectedSubject"] = "";
-        }
-        SaveSettings(function () {
-            let focus = function () { $("#" + type + "Title").focus(); };
-            let fla = type.toLowerCase() === "flashcard" ? focus : "undefined";
-            LoadPartialView("GetFlashcardPartial", "flashcards", fla);
-            if (type === "category" || type === "subject") {
-                let cat = type.toLowerCase() === "category" ? focus : "undefined";
-                LoadPartialView("GetCategoryPartial", "categories", cat);
-            }
-            if (type === "subject") {
-                let sub = type.toLowerCase() === "subject" ? focus : "undefined";
-                LoadPartialView("GetSubjectPartial", "subjects", sub);
-            }
-        });
-    });
-
-    //REPLACE
-    $('.button-save').unbind('click');
-    $('.button-save').click(function () {
-        let type = $(this).data("type");
-        SaveObject(type);
-    });
-
-    //REPLACE
-    $('.title-input').unbind('change');
-    $('.title-input').change(function () {
-        let type = $(this).data("type");
-        settingsObj["Selected" + ToProperCase(type)]["Title"] = $(this).val();
-    });
+    InitializeSectionControls();
 
     //KEEP
     $('.item-list-item').each(function () {
         let parentType = $(this).parent().data("type");
         $(this).data("type", parentType);
-        $(this).removeClass("selected");
+        if ($(this).data("type") === "subject") {
+            if ($(this).data("guid") === settingsObj["SelectedSubjectGuid"]) {
+                $(this).addClass("selected");
+            }
+            $(this).click(function () {
+                settingsObj["SelectedSubjectGuid"] = $(this).data("guid");
+                settingsObj["SelectedSubjectTitle"] = $(this).data("title");
+                ClearCategoryPartial();
+                ClearCategorySettings();
+                ClearFlashcardPartial();
+                ClearFlashcardSettings();
+                Loading.begin();
+                SaveSettings(function () {
+                    window.location = "/Home/Index";
+                });
+            });
+        } else if ($(this).data("type") === "category") {
+            if ($(this).data("guid") === settingsObj["SelectedCategoryGuid"]) {
+                $(this).addClass("selected");
+            }
+            $(this).click(function () {
+                settingsObj["SelectedCategoryGuid"] = $(this).data("guid");
+                settingsObj["SelectedCategoryTitle"] = $(this).data("title");
+                ClearFlashcardPartial();
+                ClearFlashcardSettings();
+                Loading.begin();
+                SaveSettings(function () {
+                    window.location = "/Home/Index";
+                });
+            });
+        } else if ($(this).data("type") === "flashcard") {
+            if ($(this).data("guid") === settingsObj["SelectedFlashcardGuid"]) {
+                $(this).addClass("selected");
+            }
+            $(this).click(function () {
+                settingsObj["SelectedFlashcardGuid"] = $(this).data("guid");
+                settingsObj["SelectedFlashcardTitle"] = $(this).data("title");
+                Loading.begin();
+                SaveSettings(function () {
+                    window.location = "/Home/Index";
+                });
+            });
+        }
     });
-
-    //REPLACE
-    $('.item-list-item').unbind("click");
-    $('.item-list-item').click(function () {
-        let type = $(this).data("type");
-        let obj = $(this).data("object");
-        SelectObject(type, obj);
-    });
-
-    //REPLACE
-    InitializeSectionControls();
 };
 
 //KEEP
@@ -200,221 +179,264 @@ var DefaultDateRange = function () {
     ApplyDateRange();
 };
 
-//REPLACE
-var InitializeSectionControls = function () {
-    if (settingsObj["SelectedSubject"]["SubjectGuid"] === Guid.empty) {
-        logger.debug("InitializeSectionControls SubjectGuid");
-        $(".category").each(function () {
-            $(this).addClass("disabled");
-        });
-        $(".flashcard").each(function () {
-            $(this).addClass("disabled");
-        });
-    } else if (settingsObj["SelectedCategory"]["CategoryGuid"] === Guid.empty) {
-        logger.debug("InitializeSectionControls CategoryGuid");
-        $(".flashcard").each(function () {
-            $(this).addClass("disabled");
-        });
-    }
-};
-
-//REPLACE
-var LoadPartialView = function (endpoint, sectionId, success, error) {
-    logger.debug("loadPartialView called: " + endpoint);
-    let url = redirectUrl + "/" + endpoint;
-    data = {
-        RedirectURL: "/" + redirectUrl,
-        SettingsJSON: JSON.stringify(settingsObj)
-    };
-    $.ajax({
-        url: url,
-        type: "GET",
-        data: data,
-        success: function (response) {
-            $('#' + sectionId).html(response);
-            //if (typeof success !== "undefined") success();
-            //if (typeof success !== "undefined") alert(success);
-            if (success !== "undefined") { success(); }
-        },
-        error: function () {
-            logger.error("loadPartialView failed for " + sectionId);
-            if (typeof error !== "undefined") error();
-        }
-    });
-};
-
-//REPLACE
-var SaveObject = function (type) {
-    logger.debug("SaveObject called\ntype: " + type + "\n" + JSON.stringify(settingsObj));
-    $.ajax({
-        url: "api/LMS/Save" + ToProperCase(type),
-        type: "POST",
-        data: settingsObj["Selected" + ToProperCase(type)],
-        success: function (response) {
-            logger.debug("SaveObject success: " + JSON.stringify(response));
-            let val = InputValidation.fromJson(response);
-            if (val.cssClass === "") {
-                settingsObj["Selected" + type] = val.object;
-                LoadPartialView("Get" + ToProperCase(type) + "Partial", type.tolowercase());
-            } else {
-                val.showValidation();
-            }
-        },
-        error: function (response) {
-            logger.error("SaveObject error: " + JSON.stringify(response));
-        }
-    });
-};
-
-//REPLACE
-var SelectSubject = function () {
-
-};
-
-//REPLACE
-var SelectObject = function (type, obj) {
-    Loading.begin();
-    settingsObj["Selected" + ToProperCase(type)] = obj;
-    SaveSettings(function () {
-        let fla = type.toLowerCase() === "flashcard" ? Loading.end() : "undefined";
-        LoadPartialView("GetFlashcardPartial", "flashcards", fla);
-        if (type === "category" || type === "subject") {
-            let cat = type.toLowerCase() === "category" ? Loading.end() : "undefined";
-            LoadPartialView("GetCategoryPartial", "categories", cat);
-        }
-        if (type === "subject") {
-            let sub = type.toLowerCase() === "subject" ? Loading.end() : "undefined";
-            LoadPartialView("GetSubjectPartial", "subjects", sub);
-        }
-    });
-};
-
-
-
 
 //##btn NewSubject()
-//-ClearSubjectSettings()
-//-ClearCategorySettings()
-//-ClearCategoryPartial()
-//-LockCategoryPartial()
-//-ClearFlashcardSettings()
-//-ClearFlashcardPartial()
-//-LockFlashcardPartial()
-//-SaveSettings()
-//-Focus(SubjectTitleInput)
+$('#newSubject').click(function () {
+    //-ClearSubjectSettings()
+    ClearSubjectSettings();
+    //-ClearCategorySettings()
+    ClearCategorySettings();
+    //-ClearCategoryPartial()
+    ClearCategoryPartial();
+    //-LockCategoryPartial()
+    LockCategoryPartial();
+    //-ClearFlashcardSettings()
+    ClearFlashcardSettings();
+    //-ClearFlashcardPartial()
+    ClearFlashcardPartial();
+    //-LockFlashcardPartial()
+    LockFlashcardPartial();
+    //-SaveSettings()
+    SaveSettings();
+    $('.item-list-item').each(function () {
+        $(this).removeClass("selected");
+    });
+    //-Focus(SubjectTitleInput)
+    $("#subjectTitle").focus();
+    $("#subjectTitle").val('');
+    console.log(JSON.stringify(settingsObj));
+});
 
 //##btn NewCategory()
-//-ClearCategorySettings()
-//-ClearFlashcardSettings()
-//-ClearFlashcardPartial()
-//-LockFlashcardPartial()
-//-SaveSettings()
-//-Focus(CategoryTitleInput)
+$('#newCategory').click(function () {
+    //-ClearCategorySettings()
+    ClearCategorySettings();
+    //-ClearFlashcardSettings()
+    ClearFlashcardSettings();
+    //-ClearFlashcardPartial()
+    ClearFlashcardPartial();
+    //-LockFlashcardPartial()
+    LockFlashcardPartial();
+    //-SaveSettings()
+    SaveSettings();
+    //-Focus(CategoryTitleInput)
+    $("#categoryTitle").focus();
+    console.log(JSON.stringify(settingsObj));
+});
 
 //##btn NewFlashcard()
-//-ClearFlashcardPartial()
-//-SaveSettings()
-//-Focus(FlashcardTitleInput)
+$("#newFlashcard").click(function () {
+    //-ClearFlashcardSettings()
+    ClearFlashcardSettings();
+    //-set flashcard title input value to ""
+    $("#flashcardTitle").val("");
+    //-set flaschard question textarea value to ""
+    $("#question").val("");
+    //-set flaschard answer textarea value to ""
+    $("#answer").val("");
+    //-SaveSettings()
+    SaveSettings();
+    //-Focus(FlashcardTitleInput)
+    $("#flashcardTitle").focus();
+    console.log(JSON.stringify(settingsObj));
+});
 
 
 //## ClearSubjectSettings()
-//-set settings object selected subject guid to Guid.empty()
-//-set settings object selected subject title to ""
+var ClearSubjectSettings = function () {
+    //-set settings object selected subject guid to Guid.empty()
+    settingsObj["SelectedSubjectGuid"] = Guid.empty();
+    //-set settings object selected subject title to ""
+    settingsObj["SelectedSubjectTitle"] = "";
+};
 
 //## ClearCategorySettings()
-//-set settings object selected category guid to Guid.empty()
-//-set settings object selected category title to ""
-
-//## ClearCategoryPartial()
-//-set inner html of category list to ""
-//-set category title input value to ""
+var ClearCategorySettings = function () {
+    //-set settings object selected category guid to Guid.empty()
+    settingsObj["SelectedCategoryGuid"] = Guid.empty();
+    //-set settings object selected category title to ""
+    settingsObj["SelectedCategoryTitle"] = "";
+};
 
 //## ClearFlashcardSettings()
-//-set selected flashcard guid to Guid.empty()
-//-set selected flashcard title to ""
-//-set selected flashcard question to ""
-//-set selected flashcard answer to ""
+var ClearFlashcardSettings = function () {
+    //-set selected flashcard guid to Guid.empty()
+    settingsObj["SelectedFlashcardGuid"] = Guid.empty();
+    //-set selected flashcard title to ""
+    settingsObj["SelectedFlashcardTitle"] = "";
+    //-set selected flashcard question to ""
+    settingsObj["SelectedFlashcardQuestion"] = "";
+    //-set selected flashcard answer to ""
+    settingsObj["SelectedFlashcardAnswer"] = "";
+};
+
+
+//## ClearCategoryPartial()
+var ClearCategoryPartial = function () {
+    //-set inner html of category list to ""
+    $("#categoryList").html("");
+    //-set category title input value to ""
+    $("#categoryTitle").val("");
+};
 
 //## ClearFlashcardPartial()
-//-set settings object selected flashcard guid to Guid.empty()
-//-set settings object selected flashcard title to ""
-//-set settings object selected flashcard question to ""
-//-set settings object selected flashcard answer to ""
+var ClearFlashcardPartial = function () {
+    //-set inner html of flashcard list to ""
+    $("#flashcardList").html("");
+    //-set flashcard title input value to ""
+    $("#flashcardTitle").val("");
+    //-set flaschard question textarea value to ""
+    $("#question").val("");
+    //-set flaschard answer textarea value to ""
+    $("#answer").val("");
+};
 
 
 //## LockCategoryPartial()
-//-Set new category button to disabled
-//-set category title input to disabled
-//-set save category button to diabled
+var LockCategoryPartial = function () {
+    //-Set new category button to disabled
+    $("#newCategory").addClass("disabled");
+    //-set category title input to disabled
+    $("#categoryTitle").addClass("disabled");
+    //-set save category button to diabled
+    $("#saveCategory").addClass("disabled");
+};
 
 //## LockFlashcardPartial()
-//-Set new flashcard button to diabled
-//-Set flashcard title input to diabled
-//-Set save flashcard button to disabled
-//-Set flashcard question to disabled
-//-Set flashcard answer to disabled
-
-
-//## UnlockCategoryPartial()
-//-Set new category button to enabled
-//-set category title input to enabled
-//-set save category button to enabled
-
-//## UnlockFlashcardPartial()
-//-Set new flashcard button to enabled
-//-Set flashcard title input to enabled
-//-Set save flashcard button to enabled
-//-Set flashcard question to enabled
-//-Set flashcard answer to enabled
+var LockFlashcardPartial = function () {
+    //-Set new flashcard button to diabled
+    $("#newFlashcard").addClass("disabled");
+    //-Set flashcard title input to diabled
+    $("#flashcardTitle").addClass("disabled");
+    //-Set save flashcard button to disabled
+    $("#saveFlashcard").addClass("disabled");
+    //-Set flashcard question to disabled
+    $("#question").addClass("disabled");
+    //-Set flashcard answer to disabled
+    $("#answer").addClass("disabled");
+};
 
 
 //##btn SaveSubject()
-//-Update the settings object
-//--Set the selected subject guid and title
-//-Send user settings to mvc controller: SaveSubject
-//--Controller sends settings object to viewmodel
-//--Viewmodel creates or updates subject as appropriate and saves settings if it succeeds
-//-If everything goes well, reload the page with the newly saved settings
-//--If not, server sends validation object back
+$("#saveSubject").click(function () {
+    if ($("#subjectTitle").val().trim() === "") return;
+    //-Update the settings object
+    //--Set the selected subject title
+    settingsObj["SelectedSubjectTitle"] = $("#subjectTitle").val();
+    //-Send user settings to api controller: SaveSubject
+    let data = AddAntiForgeryToken({
+        RedirectURL: "/" + redirectUrl,
+        SettingsJSON: JSON.stringify(settingsObj)
+    });
+    $.ajax({
+        url: "api/LMS/SaveSubject",
+        type: "POST",
+        data: data,
+        success: function (response) {
+            let val = InputValidation.fromJson(response);
+            if (val.cssClass === "" || val.cssClass === "success") {
+                window.location = "/Home/Index";
+            } else {
+                //TODO use the InputValidation class to display the message
+                alert(JSON.stringify(val.message));
+            }
+        },
+        error: function (response) {
+            //TODO implement error response
+            // Should probably be in the form of a new InputValidation object
+        }
+    });
+    //--Controller sends settings object to viewmodel
+    //--Viewmodel creates or updates subject as appropriate and saves settings if it succeeds
+    //-If everything goes well, reload the page with the newly saved settings
+    //--If not, server sends validation object back
+});
 
 //##btn SaveCategory()
-//-Update the settings object
-//--Set the selected category guid and title
-//-Send user settings to mvc controller: SaveCategory
-//--Controller sends settings object to viewmodel
-//--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
-//-If everything goes well, reload the page with the newly saved settings
-//--If not, server sends validation object back
+$("#saveCategory").click(function () {
+    if ($("#categoryTitle").val().trim() === "") return;
+    //-Update the settings object
+    //--Set the selected category title
+    settingsObj["SelectedCategoryTitle"] = $("#categoryTitle").val();
+    //-Send user settings to api controller: SaveCategory
+    let data = AddAntiForgeryToken({
+        RedirectURL: "/" + redirectUrl,
+        SettingsJSON: JSON.stringify(settingsObj)
+    });
+    $.ajax({
+        url: "api/LMS/SaveCategory",
+        type: "POST",
+        data: data,
+        success: function (response) {
+            let val = InputValidation.fromJson(response);
+            if (val.cssClass === "" || val.cssClass === "success") {
+                window.location = "/Home/Index";
+            } else {
+                //TODO use the InputValidation class to display the message
+                alert(JSON.stringify(val.message));
+            }
+        },
+        error: function (response) {
+            //TODO implement error response
+            // Should probably be use the InputValidation object
+        }
+    });
+    //--Controller sends settings object to viewmodel
+    //--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
+    //-If everything goes well, reload the page with the newly saved settings
+    //--If not, server sends validation object back
+});
 
 //##btn SaveFlashcard()
-//-Update the settings object
-//--Set the selected flashcard guid, title, question, and answer
-//-Send user settings to mvc controller: SaveFlashcard
-//--Controller sends settings object to viewmodel
-//--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
-//-If everything goes well, reload the page with the newly saved settings
-//--If not, server sends validation object back
+$("#saveFlashcard").click(function () {
+    if ($("#categoryTitle").val().trim() === "") return;
+    //-Update the settings object
+    //--Set the selected flashcard title, question, and answer
+    settingsObj["SelectedFlashcardTitle"] = $("#flashcardTitle").val();
+    settingsObj["SelectedFlashcardQuestion"] = $("#question").val();
+    settingsObj["SelectedFlashcardAnswer"] = $("#answer").val();
+    //-Send user settings to mvc controller: SaveFlashcard
+    let data = AddAntiForgeryToken({
+        RedirectURL: "/" + redirectUrl,
+        SettingsJSON: JSON.stringify(settingsObj)
+    });
+    $.ajax({
+        url: "api/LMS/SaveFlashcard",
+        type: "POST",
+        data: data,
+        success: function (response) {
+            let val = InputValidation.fromJson(response);
+            if (val.cssClass === "" || val.cssClass === "success") {
+                window.location = "/Home/Index";
+            } else {
+                //TODO use the InputValidation class to display the message
+                alert(JSON.stringify(val.message));
+            }
+        },
+        error: function (response) {
+            //TODO implement error response
+            // Should probably be use the InputValidation object
+        }
+    });
+    //--Controller sends settings object to viewmodel
+    //--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
+    //-If everything goes well, reload the page with the newly saved settings
+    //--If not, server sends validation object back
+});
 
 
 //## InitializeSectionControls()
-//-If the selected subject guid == empty
-//--LockCategoryPartial()
-//--LockFlashcardPartial()
-//-Elseif the selected category guid == empty
-//--LockFlashcardPartial()
-
-
-//## SelectSubjectItem()
-//-Update the settings object
-//-SaveSettings()
-//-Reload page
-
-//## SelectCategoryItem()
-//-Update the settings object
-//-SaveSettings()
-//-Reload page
-
-//## SelectFlashcardItem()
-//-Update the settings object
-//-SaveSettings()
-//-Reload page
+var InitializeSectionControls = function () {
+    //-If the selected subject guid == empty
+    if (Guid.isEmpty(settingsObj["SelectedSubjectGuid"])) {
+        //--LockCategoryPartial()
+        LockCategoryPartial();
+        //--LockFlashcardPartial()
+        LockFlashcardPartial();
+    }
+    //-If the selected category guid == empty
+    if (Guid.isEmpty(settingsObj["SelectedCategoryGuid"])) {
+        //--LockFlashcardPartial()
+        LockFlashcardPartial();
+    }
+};

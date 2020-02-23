@@ -24,7 +24,11 @@ namespace OtherSquare.ViewModels
             }
             set
             {
-                this._settings = value;
+                if (value == null)
+                {
+                    value = new NAV_FlashcardSettings();
+                }
+                _settings = value;
             }
         }
 
@@ -42,23 +46,6 @@ namespace OtherSquare.ViewModels
             set
             {
                 _categoryList = value;
-            }
-        }
-
-        private InputValidation _title_Validation { get; set; }
-        public InputValidation Title_Validation
-        {
-            get
-            {
-                if (_title_Validation == null)
-                {
-                    _title_Validation = InputValidation.Empty();
-                }
-                return _title_Validation;
-            }
-            set
-            {
-                _title_Validation = value;
             }
         }
 
@@ -84,48 +71,6 @@ namespace OtherSquare.ViewModels
 
         #region Methods
 
-        //public CategoryViewModel CreateCategory(string categoryTitle, NAV_FlashcardSettings settings = null)
-        //{
-        //    try
-        //    {
-        //        InputValidation titleValidation = new InputValidation();
-        //        categoryTitle = categoryTitle.Trim();
-        //        using (OtherSquareDbContext db = new OtherSquareDbContext())
-        //        {
-        //            Category existingCategory = db.Categories.FirstOrDefault(c => c.Title.ToLower() == categoryTitle.ToLower());
-        //            if (existingCategory != null)
-        //            {
-        //                if (existingCategory.IsArchived)
-        //                {
-        //                    titleValidation = InputValidation.Error($"The category '{categoryTitle}' already exists, but was archived.");
-        //                    return this;
-        //                }
-        //                else
-        //                {
-        //                    titleValidation = InputValidation.Error($"The category '{categoryTitle}' already exists.");
-        //                    return this;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                Category newCategory = new Category(categoryTitle);
-        //                db.Categories.Add(newCategory);
-        //                db.SaveChanges();
-        //                titleValidation = InputValidation.Success("New subject successfully created.");
-        //            }
-        //        }
-        //        CategoryViewModel result = new CategoryViewModel(settings);
-        //        result.Title_Validation = titleValidation;
-        //        return result;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this.Title_Validation = InputValidation.Error("There was an error saving the subject to the database.");
-        //        //TODO Log exception
-        //        throw;
-        //    }
-        //}
-
         public SubjectViewModel ArchiveCategories()
         {
             //TODO set the IsArchived property to true for the matching records
@@ -147,11 +92,12 @@ namespace OtherSquare.ViewModels
                     List<Category> Categories = new List<Category>();
                     if ((bool)this.Settings.IncludeArchive)
                     {
-                        Categories = db.Categories.Where(c => c.SubjectGuid == Settings.SelectedSubject.SubjectGuid).ToList();
+                        Categories = db.Categories.Where(c => c.SubjectGuid == Settings.SelectedSubjectGuid).ToList();
                     }
                     else
                     {
-                        Categories = db.Categories.Where(c => c.IsArchived == false && c.SubjectGuid == Settings.SelectedSubject.SubjectGuid).ToList();
+                        Categories = db.Categories.Where(c => c.SubjectGuid == Settings.SelectedSubjectGuid 
+                                                              && c.IsArchived == false).ToList();
                     }
 
                     foreach (Category c in Categories)
@@ -172,7 +118,7 @@ namespace OtherSquare.ViewModels
 
                         ListItemViewModel li = new ListItemViewModel()
                         {
-                            SelectedObject = c.Copy(),
+                            //SelectedObject = c.Copy(),
                             Guid = c.CategoryGuid,
                             Title = c.Title,
                             ScoreIsNA = scoreIsNa,
@@ -191,39 +137,63 @@ namespace OtherSquare.ViewModels
             }
         }
         
-        public static InputValidation SaveCategory(Category category)
+        public static InputValidation SaveCategory(UserSetting userSetting)
         {
-            if (category.IsValid())
+            NAV_FlashcardSettings fSet = null;
+            Guid uiSubjectGuid = Guid.Empty;
+            Guid uiCategoryGuid = Guid.Empty;
+            string uiTitle = null;
+            Category dbCategory = null;
+            try
             {
-                if (category.IsNew())
+                fSet = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
+                uiSubjectGuid = fSet.SelectedSubjectGuid;
+                if (uiSubjectGuid == Guid.Empty || uiSubjectGuid == null) return InputValidation.Error("Something went wrong. This category has no subject. Can not create orphan categories.");
+                uiCategoryGuid = fSet.SelectedCategoryGuid;
+                uiTitle = fSet.SelectedCategoryTitle.Trim();
+                if (string.IsNullOrEmpty(uiTitle)) return InputValidation.Error("Title can not be empty.");
+                using (OtherSquareDbContext db = new OtherSquareDbContext())
                 {
-                    if (category.TitleExistsInDatabase())
+                    if (uiCategoryGuid != Guid.Empty && uiCategoryGuid != null)
                     {
-                        InputValidation val = InputValidation.Alert("A category with that title already exitst. (It could be archived)");
-                        val.Object = category;
-                        return val;
+                        dbCategory = db.Categories.FirstOrDefault(c => c.CategoryGuid == uiCategoryGuid 
+                                                                  && c.SubjectGuid == uiSubjectGuid);
+                        if (dbCategory == null)
+                        {
+                            //Something is wrong. Why didn't we find a record?
+                            throw new Exception($"The category with the Guid {uiCategoryGuid.ToString()} was not found in the database.");
+                        }
+                        dbCategory.Title = uiTitle;
+                        db.SaveChanges();
+
+                        //update the user setting and save it
+                        fSet.SelectedCategoryTitle = uiTitle;
+                        userSetting.SettingsJSON = JsonConvert.SerializeObject(fSet);
+                        userSetting.SaveSettings();
+
+                        return InputValidation.Success("Category successfully updated.");
                     }
                     else
                     {
-                        category.Create();
-                        InputValidation val = InputValidation.Empty();
-                        val.Object = category;
-                        return val;
+                        dbCategory = db.Categories.FirstOrDefault(c => c.SubjectGuid == uiSubjectGuid
+                                                                  && c.Title.ToLower() == uiTitle.ToLower());
+                        if (dbCategory != null)
+                        {
+                            return InputValidation.Alert($"A category with the title {uiTitle} already exitst. (It could be archived)");
+                        }
+
+                        Category newCategory = new Category(uiSubjectGuid, uiTitle);
+                        db.Categories.Add(newCategory);
+                        db.SaveChanges();
+                        return InputValidation.Success("Category successfully created.");
                     }
-                }
-                else
-                {
-                    category.Update();
-                    InputValidation val = InputValidation.Empty();
-                    val.Object = category;
-                    return val;
+
                 }
             }
-            else
+            catch(Exception e)
             {
-                InputValidation val = InputValidation.Alert(category.ValidationErrors());
-                val.Object = category;
-                return val;
+                //TODO do something with the fSet here?
+                return InputValidation.Error(e.Message);
             }
         }
 

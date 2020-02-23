@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using OtherSquare.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace OtherSquare.Controllers.API
 {
@@ -33,25 +34,29 @@ namespace OtherSquare.Controllers.API
 
         [System.Web.Mvc.HttpPost]
         [Route("api/LMS/SaveSubject")]
-        public string SaveSubject(Subject subject)
+        public string SaveSubject(UserSetting model)
         {
-            InputValidation val = SubjectViewModel.SaveSubject(subject);
+            model.UserId = User.Identity.GetUserId();
+            InputValidation val = SubjectViewModel.SaveSubject(model);
             return val.ToJson();
         }
 
         [System.Web.Mvc.HttpPost]
         [Route("api/LMS/SaveCategory")]
-        public string SaveCategory(Category category)
+        public string SaveCategory(UserSetting model)
         {
-            InputValidation val = CategoryViewModel.SaveCategory(category);
+            model.UserId = User.Identity.GetUserId();
+            InputValidation val =CategoryViewModel.SaveCategory(model);
             return val.ToJson();
         }
 
         [System.Web.Mvc.HttpPost]
         [Route("api/LMS/SaveFlashcard")]
-        public void SaveFlashcard(FlashCard flashcard)
+        public string SaveFlashcard(UserSetting model) //Change the argument passed in to be a UserSettings object
         {
-            flashcard.Save();
+            model.UserId = User.Identity.GetUserId();
+            InputValidation val = FlashcardViewModel.SaveFlashcard(model);
+            return val.ToJson();
         }
     }
 }
