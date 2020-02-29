@@ -71,16 +71,48 @@ namespace OtherSquare.ViewModels
 
         #region Methods
 
-        public SubjectViewModel ArchiveCategories()
+        public static void ArchiveCategories(List<Guid> categoryGuids)
         {
-            //TODO set the IsArchived property to true for the matching records
-            return new SubjectViewModel();
+            try
+            {
+                using (OtherSquareDbContext db = new OtherSquareDbContext())
+                {
+                    List<Category> selectedCategories = db.Categories.Where(c => categoryGuids.Contains(c.CategoryGuid)).ToList();
+                    foreach (Category c in selectedCategories)
+                    {
+                        c.IsArchived = true;
+                        c.IsSelected = false;
+                    }
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+                //TODO Log Error
+                throw;
+            }
         }
 
-        public SubjectViewModel UnArchiveCategories()
+        public static void UnArchiveCategories(List<Guid> categoryGuids)
         {
-            //TODO set the IsArchived property to false for the matching records
-            return new SubjectViewModel();
+            try
+            {
+                using (OtherSquareDbContext db = new OtherSquareDbContext())
+                {
+                    List<Category> selectedCategories = db.Categories.Where(c => categoryGuids.Contains(c.CategoryGuid)).ToList();
+                    foreach (Category c in selectedCategories)
+                    {
+                        c.IsArchived = false;
+                        c.IsSelected = false;
+                    }
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+                //TODO Log Error
+                throw;
+            }
         }
 
         private void buildCategoryList()

@@ -14,15 +14,12 @@ namespace OtherSquare
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/jquery-ui-{version}.js"));
 
-            //bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-            //    "~/Scripts/jquery.validate*"));
-
             bundles.Add(new ScriptBundle("~/bundles/main").Include(
                 "~/Scripts/OtherSquare/logger.js",
                 "~/Scripts/OtherSquare/main.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/lms").Include(
-                "~/Scripts/OtherSquare/lms.js"));
+            bundles.Add(new ScriptBundle("~/bundles/lms_fc").Include(
+                "~/Scripts/OtherSquare/lms_flashcards.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/moment").Include(
                 "~/Scripts/moment.js"

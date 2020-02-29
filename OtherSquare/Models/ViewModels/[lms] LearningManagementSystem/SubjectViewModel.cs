@@ -70,7 +70,7 @@ namespace OtherSquare.ViewModels
 
         #region Methods
 
-        public SubjectViewModel ArchiveSubjects(List<Guid> subjectGuids, NAV_FlashcardSettings settings = null)
+        public static void ArchiveSubjects(List<Guid> subjectGuids)
         {
             try
             {
@@ -80,6 +80,7 @@ namespace OtherSquare.ViewModels
                     foreach (Subject s in selectedSubjects)
                     {
                         s.IsArchived = true;
+                        s.IsSelected = false;
                     }
                     db.SaveChanges();
                 }
@@ -89,10 +90,9 @@ namespace OtherSquare.ViewModels
                 //TODO Log Error
                 throw;
             }
-            return new SubjectViewModel(settings);
         }
 
-        public SubjectViewModel UnArchiveSubjects(List<Guid> subjectGuids, NAV_FlashcardSettings settings = null)
+        public static void UnArchiveSubjects(List<Guid> subjectGuids)
         {
             try
             {
@@ -102,6 +102,7 @@ namespace OtherSquare.ViewModels
                     foreach (Subject s in selectedSubjects)
                     {
                         s.IsArchived = false;
+                        s.IsSelected = false;
                     }
                     db.SaveChanges();
                 }
@@ -111,7 +112,6 @@ namespace OtherSquare.ViewModels
                 //TODO Log Error
                 throw;
             }
-            return new SubjectViewModel(settings);
         }
 
         private void buildSubjectList()

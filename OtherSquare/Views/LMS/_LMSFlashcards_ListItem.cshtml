@@ -4,11 +4,10 @@
 @{
     string archived = Model.IsArchived ? "archived" : "";
     string selected = Model.Selected ? "checked" : "";
-    //string obj = Html.Raw(JsonConvert.SerializeObject(Model.SelectedObject)).ToString();
 }
 
 <div class="item-list-item @archived" data-guid="@Model.Guid" data-title="@Model.Title" data-type="">
-    <div>@Model.Title</div>
+    <div class="item-title">@Model.Title</div>
     @{
         if (Model.ScoreIsNA)
         {

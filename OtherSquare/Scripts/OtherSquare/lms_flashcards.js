@@ -1,9 +1,8 @@
-﻿//CONSIDER MOVING CONTENTS OUT AND GETTING RID OF THIS WRAPPER FUNCTION
-var LMS = function () {
+﻿let allowSelect = true;
+
+var LMSFlashcards = function () {
     //#region Settings
 
-    //KEEP
-    $('.setting').unbind('click');
     $('.setting').click(function () {
         if ($(this).data("behavior") !== "click") return;
         logger.debug(".setting.click()");
@@ -17,6 +16,7 @@ var LMS = function () {
                 SaveSettings();
                 break;
             case "IncludeArchive":
+                Loading.begin();
                 value = $(this).is(":checked");
                 $('.unarchive').toggleClass("hide");
                 settingsObj[name] = value;
@@ -50,8 +50,6 @@ var LMS = function () {
         }
     });
 
-    //KEEP
-    $('.setting').unbind('change');
     $('.setting').change(function () {
         if ($(this).data("behavior") !== "change") return;
         logger.debug(".setting.change()");
@@ -69,40 +67,76 @@ var LMS = function () {
         }
     });
 
-    //KEEP
     $('.date-picker').datepicker({
         dateFormat: "mm/dd/yy",
         maxDate: new Date()
     });
 
-    //KEEP
-    $('#applyDateRange').unbind('click');
     $('#applyDateRange').click(function () {
         ApplyDateRange();
     });
 
-    //KEEP
-    $('#defaultDateRange').unbind('click');
     $('#defaultDateRange').click(function () {
         DefaultDateRange();
     });
 
-    //KEEP
     InitializeDateSettings();
 
     //#endregion
 
     InitializeSectionControls();
+    
+    $(':checkbox').mousedown(function () {
+        if ($(this).attr("name") === "IncludeArchive") return;
+        if ($(this).val() === "on") {
+            $(this).val("");
+        } else {
+            $(this).val("on");
+        }
+        allowSelect = false;
+        let data = {
+            guid: $(this).parent().data("guid"),
+            modelType: $(this).parent().data("type")
+        };
+        $.ajax({
+            url: "api/LMS/SelectItem",
+            type: "POST",
+            data: data,
+            success: function () {
+                InitializeMultiSelectButtons();
+                allowSelect = true;
+                return false;
+            },
+            error: function () {
+                return false;
+            }
+        });
+    });
 
-    //KEEP
     $('.item-list-item').each(function () {
+        //Set up the ability to count the checked checkboxes to
+        //enable or disable the "Archive Selected", "Unarchive Selected", 
+        //and "Delete Selected" buttons
+        if ($(this).children(":input").attr("checked") === "checked") {
+            $(this).children(":input").val("on");
+        } else {
+            $(this).children(":input").val("");
+        }
+
+        //Set the data type for each item and wire up
+        //the mouseup function
         let parentType = $(this).parent().data("type");
         $(this).data("type", parentType);
         if ($(this).data("type") === "subject") {
             if ($(this).data("guid") === settingsObj["SelectedSubjectGuid"]) {
                 $(this).addClass("selected");
             }
-            $(this).click(function () {
+            $(this).mouseup(function () {
+                if (allowSelect === false){
+                    allowSelect = true;
+                    return;
+                }
+                if (settingsObj["SelectedSubjectGuid"] === $(this).data("guid")) return;
                 settingsObj["SelectedSubjectGuid"] = $(this).data("guid");
                 settingsObj["SelectedSubjectTitle"] = $(this).data("title");
                 ClearCategoryPartial();
@@ -118,7 +152,12 @@ var LMS = function () {
             if ($(this).data("guid") === settingsObj["SelectedCategoryGuid"]) {
                 $(this).addClass("selected");
             }
-            $(this).click(function () {
+            $(this).mouseup(function () {
+                if (allowSelect === false) {
+                    allowSelect = true;
+                    return;
+                }
+                if (settingsObj["SelectedCategoryGuid"] === $(this).data("guid")) return;
                 settingsObj["SelectedCategoryGuid"] = $(this).data("guid");
                 settingsObj["SelectedCategoryTitle"] = $(this).data("title");
                 ClearFlashcardPartial();
@@ -132,7 +171,12 @@ var LMS = function () {
             if ($(this).data("guid") === settingsObj["SelectedFlashcardGuid"]) {
                 $(this).addClass("selected");
             }
-            $(this).click(function () {
+            $(this).mouseup(function () {
+                if (allowSelect === false) {
+                    allowSelect = true;
+                    return;
+                }
+                if (settingsObj["SelectedFlashcardGuid"] === $(this).data("guid")) return;
                 settingsObj["SelectedFlashcardGuid"] = $(this).data("guid");
                 settingsObj["SelectedFlashcardTitle"] = $(this).data("title");
                 Loading.begin();
@@ -142,9 +186,10 @@ var LMS = function () {
             });
         }
     });
+
+    InitializeMultiSelectButtons();
 };
 
-//KEEP
 var InitializeDateSettings = function () {
     logger.debug("initializeDateSettings");
     let begin = moment.utc($("#BeginDate").val()).format('MM/DD/YYYY');
@@ -154,8 +199,8 @@ var InitializeDateSettings = function () {
     $("#EndDate").val(end);
 };
 
-//KEEP
 var ApplyDateRange = function () {
+    Loading.begin();
     let begin = $('#BeginDate').val();
     let end = $('#EndDate').val();
     if (moment(end) > moment(begin)) {
@@ -171,7 +216,6 @@ var ApplyDateRange = function () {
     }
 };
 
-//KEEP
 var DefaultDateRange = function () {
     let begin = moment(new Date().toLocaleDateString()).subtract(6, 'months');
     $('#BeginDate').val(new Date(begin).toLocaleDateString());
@@ -179,151 +223,86 @@ var DefaultDateRange = function () {
     ApplyDateRange();
 };
 
-
-//##btn NewSubject()
 $('#newSubject').click(function () {
-    //-ClearSubjectSettings()
     ClearSubjectSettings();
-    //-ClearCategorySettings()
     ClearCategorySettings();
-    //-ClearCategoryPartial()
     ClearCategoryPartial();
-    //-LockCategoryPartial()
     LockCategoryPartial();
-    //-ClearFlashcardSettings()
     ClearFlashcardSettings();
-    //-ClearFlashcardPartial()
     ClearFlashcardPartial();
-    //-LockFlashcardPartial()
     LockFlashcardPartial();
-    //-SaveSettings()
     SaveSettings();
     $('.item-list-item').each(function () {
         $(this).removeClass("selected");
     });
-    //-Focus(SubjectTitleInput)
     $("#subjectTitle").focus();
     $("#subjectTitle").val('');
-    console.log(JSON.stringify(settingsObj));
 });
 
-//##btn NewCategory()
 $('#newCategory').click(function () {
-    //-ClearCategorySettings()
     ClearCategorySettings();
-    //-ClearFlashcardSettings()
     ClearFlashcardSettings();
-    //-ClearFlashcardPartial()
     ClearFlashcardPartial();
-    //-LockFlashcardPartial()
     LockFlashcardPartial();
-    //-SaveSettings()
     SaveSettings();
-    //-Focus(CategoryTitleInput)
     $("#categoryTitle").focus();
-    console.log(JSON.stringify(settingsObj));
 });
 
-//##btn NewFlashcard()
 $("#newFlashcard").click(function () {
-    //-ClearFlashcardSettings()
     ClearFlashcardSettings();
-    //-set flashcard title input value to ""
     $("#flashcardTitle").val("");
-    //-set flaschard question textarea value to ""
     $("#question").val("");
-    //-set flaschard answer textarea value to ""
     $("#answer").val("");
-    //-SaveSettings()
     SaveSettings();
-    //-Focus(FlashcardTitleInput)
     $("#flashcardTitle").focus();
-    console.log(JSON.stringify(settingsObj));
 });
 
-
-//## ClearSubjectSettings()
 var ClearSubjectSettings = function () {
-    //-set settings object selected subject guid to Guid.empty()
     settingsObj["SelectedSubjectGuid"] = Guid.empty();
-    //-set settings object selected subject title to ""
     settingsObj["SelectedSubjectTitle"] = "";
 };
 
-//## ClearCategorySettings()
 var ClearCategorySettings = function () {
-    //-set settings object selected category guid to Guid.empty()
     settingsObj["SelectedCategoryGuid"] = Guid.empty();
-    //-set settings object selected category title to ""
     settingsObj["SelectedCategoryTitle"] = "";
 };
 
-//## ClearFlashcardSettings()
 var ClearFlashcardSettings = function () {
-    //-set selected flashcard guid to Guid.empty()
     settingsObj["SelectedFlashcardGuid"] = Guid.empty();
-    //-set selected flashcard title to ""
     settingsObj["SelectedFlashcardTitle"] = "";
-    //-set selected flashcard question to ""
     settingsObj["SelectedFlashcardQuestion"] = "";
-    //-set selected flashcard answer to ""
     settingsObj["SelectedFlashcardAnswer"] = "";
 };
 
-
-//## ClearCategoryPartial()
 var ClearCategoryPartial = function () {
-    //-set inner html of category list to ""
     $("#categoryList").html("");
-    //-set category title input value to ""
     $("#categoryTitle").val("");
 };
 
-//## ClearFlashcardPartial()
 var ClearFlashcardPartial = function () {
-    //-set inner html of flashcard list to ""
     $("#flashcardList").html("");
-    //-set flashcard title input value to ""
     $("#flashcardTitle").val("");
-    //-set flaschard question textarea value to ""
     $("#question").val("");
-    //-set flaschard answer textarea value to ""
     $("#answer").val("");
 };
 
-
-//## LockCategoryPartial()
 var LockCategoryPartial = function () {
-    //-Set new category button to disabled
     $("#newCategory").addClass("disabled");
-    //-set category title input to disabled
     $("#categoryTitle").addClass("disabled");
-    //-set save category button to diabled
     $("#saveCategory").addClass("disabled");
 };
 
-//## LockFlashcardPartial()
 var LockFlashcardPartial = function () {
-    //-Set new flashcard button to diabled
     $("#newFlashcard").addClass("disabled");
-    //-Set flashcard title input to diabled
     $("#flashcardTitle").addClass("disabled");
-    //-Set save flashcard button to disabled
     $("#saveFlashcard").addClass("disabled");
-    //-Set flashcard question to disabled
     $("#question").addClass("disabled");
-    //-Set flashcard answer to disabled
     $("#answer").addClass("disabled");
 };
 
-
-//##btn SaveSubject()
 $("#saveSubject").click(function () {
     if ($("#subjectTitle").val().trim() === "") return;
-    //-Update the settings object
-    //--Set the selected subject title
     settingsObj["SelectedSubjectTitle"] = $("#subjectTitle").val();
-    //-Send user settings to api controller: SaveSubject
     let data = AddAntiForgeryToken({
         RedirectURL: "/" + redirectUrl,
         SettingsJSON: JSON.stringify(settingsObj)
@@ -346,19 +325,11 @@ $("#saveSubject").click(function () {
             // Should probably be in the form of a new InputValidation object
         }
     });
-    //--Controller sends settings object to viewmodel
-    //--Viewmodel creates or updates subject as appropriate and saves settings if it succeeds
-    //-If everything goes well, reload the page with the newly saved settings
-    //--If not, server sends validation object back
 });
 
-//##btn SaveCategory()
 $("#saveCategory").click(function () {
     if ($("#categoryTitle").val().trim() === "") return;
-    //-Update the settings object
-    //--Set the selected category title
     settingsObj["SelectedCategoryTitle"] = $("#categoryTitle").val();
-    //-Send user settings to api controller: SaveCategory
     let data = AddAntiForgeryToken({
         RedirectURL: "/" + redirectUrl,
         SettingsJSON: JSON.stringify(settingsObj)
@@ -381,21 +352,13 @@ $("#saveCategory").click(function () {
             // Should probably be use the InputValidation object
         }
     });
-    //--Controller sends settings object to viewmodel
-    //--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
-    //-If everything goes well, reload the page with the newly saved settings
-    //--If not, server sends validation object back
 });
 
-//##btn SaveFlashcard()
 $("#saveFlashcard").click(function () {
     if ($("#categoryTitle").val().trim() === "") return;
-    //-Update the settings object
-    //--Set the selected flashcard title, question, and answer
     settingsObj["SelectedFlashcardTitle"] = $("#flashcardTitle").val();
     settingsObj["SelectedFlashcardQuestion"] = $("#question").val();
     settingsObj["SelectedFlashcardAnswer"] = $("#answer").val();
-    //-Send user settings to mvc controller: SaveFlashcard
     let data = AddAntiForgeryToken({
         RedirectURL: "/" + redirectUrl,
         SettingsJSON: JSON.stringify(settingsObj)
@@ -418,25 +381,120 @@ $("#saveFlashcard").click(function () {
             // Should probably be use the InputValidation object
         }
     });
-    //--Controller sends settings object to viewmodel
-    //--Viewmodel creates or updates category as appropriate and saves settings if it succeeds
-    //-If everything goes well, reload the page with the newly saved settings
-    //--If not, server sends validation object back
 });
 
-
-//## InitializeSectionControls()
 var InitializeSectionControls = function () {
-    //-If the selected subject guid == empty
     if (Guid.isEmpty(settingsObj["SelectedSubjectGuid"])) {
-        //--LockCategoryPartial()
         LockCategoryPartial();
-        //--LockFlashcardPartial()
         LockFlashcardPartial();
     }
-    //-If the selected category guid == empty
     if (Guid.isEmpty(settingsObj["SelectedCategoryGuid"])) {
-        //--LockFlashcardPartial()
         LockFlashcardPartial();
+    }
+};
+
+$(".archive").click(function () {
+    let type = $(this).data("type");
+    let guids = GetSelectedGuids(type);
+    Archive_Unarchive(type, guids, "Archive");
+});
+
+$(".unarchive").click(function () {
+    let type = $(this).data("type");
+    let guids = GetSelectedGuids(type);
+    Archive_Unarchive(type, guids, "UnArchive");
+});
+
+var GetSelectedGuids = function (type) {
+    let selectedItems = [];
+    $(".item-list-item").each(function () {
+        if ($(this).data("type") === type) {
+            if ($(this).children(":input").val() === "on") {
+                selectedItems.push($(this).data("guid"));
+            }
+        }
+    });
+    return selectedItems;
+};
+
+var Archive_Unarchive = function (type, guids, action) {
+    Loading.begin();
+    $.ajax({
+        url: "api/LMS/" + action + "Items",
+        type: "POST",
+        data: {
+            modelType: type,
+            guids: guids
+        },
+        success: function () {
+            window.location = "/Home/Index";
+        },
+        error: function () {
+            //do something?
+        }
+    });
+};
+
+$("#deleteFlashcards").click(function () {
+    Loading.begin();
+    let type = "flashcard";
+    let guids = GetSelectedGuids(type);
+    $.ajax({
+        url: "api/LMS/RemoveFlashcards",
+        type: "POST",
+        data: {
+            modelType: type,
+            guids: guids
+        },
+        success: function () {
+            window.location = "/Home/Index";
+        },
+        error: function () {
+            //do something?
+        }
+    });
+});
+
+var InitializeMultiSelectButtons = function () {
+    let selectedSubjects = 0;
+    let selectedCategories = 0;
+    let selectedFlashcards = 0;
+    $(".item-list-item").each(function () {
+        switch ($(this).data("type")) {
+            case "subject":
+                if ($(this).children(":input").val() === "on") {
+                    selectedSubjects++;
+                }
+                break;
+            case "category":
+                if ($(this).children(":input").val() === "on") {
+                    selectedCategories++;
+                }
+                break;
+            case "flashcard":
+                if ($(this).children(":input").val() === "on") {
+                    selectedFlashcards++;
+                }
+                break;
+        }
+    });
+    if (selectedSubjects === 0) {
+        $("#archiveSubject").addClass("disabled");
+        $("#unarchiveSubject").addClass("disabled");
+    } else {
+        $("#archiveSubject").removeClass("disabled");
+        $("#unarchiveSubject").removeClass("disabled");
+    }
+    if (selectedCategories === 0) {
+        $("#archiveCategory").addClass("disabled");
+        $("#unarchiveCategory").addClass("disabled");
+    } else {
+        $("#archiveCategory").removeClass("disabled");
+        $("#unarchiveCategory").removeClass("disabled");
+    }
+    if (selectedFlashcards === 0) {
+        $("#deleteFlashcards").addClass("disabled");
+    } else {
+        $("#deleteFlashcards").removeClass("disabled");
     }
 };

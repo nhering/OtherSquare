@@ -18,7 +18,7 @@
     </div>
 </div>
 
-@Scripts.Render("~/bundles/lms")
+@Scripts.Render("~/bundles/lms_fc")
 @Scripts.Render("~/bundles/moment")
 
 <script>
@@ -26,6 +26,6 @@
         settingsObj = @Html.Raw(JsonConvert.SerializeObject(Model.Settings));
         redirectUrl = "LMS";
         SetNavBreadcrumbs(["LMS", "LMS_Flashcards"]);
-        LMS();
+        LMSFlashcards();
     });
 </script>

@@ -3,7 +3,6 @@
 @using Newtonsoft.Json;
 
 @{
-    //if (Model.Settings.SelectedCategory == null) { Model.Settings.SelectedCategory = new OtherSquare.Models.Category(); };
     string expandCollapse = Model.Settings.CategoryAccordionExpanded ? "expanded" : "collapsed";
     string unarchive = (bool)Model.Settings.IncludeArchive ? "" : "hide";
 }
@@ -14,8 +13,8 @@
             <span class="expand-collapse setting" data-behavior="click" name="CategoryAccordionExpanded">+/-</span>Categories
         </div>
         <div class="section-controls category-section @expandCollapse">
-            <button>Archive Selected</button>
-            <button class="unarchive @unarchive">Unarchive Selected</button>
+            <button id="archiveCategory" class="archive" data-type="category">Archive Selected</button>
+            <button id="unarchiveCategory" class="unarchive @unarchive" data-type="category">Unarchive Selected</button>
             <button id="newCategory">New</button>
         </div>
     </div>
@@ -41,11 +40,3 @@
         </div>
     </div>
 </div>
-
-@*<script>
-    if (typeof settingsObj !== "undefined") {
-        settingsObj["SelectedCategory"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedCategory));
-        logger.log("PartialView Categories loaded. settingsObj = " + JSON.stringify(settingsObj));
-        LMS();
-    }
-</script>*@

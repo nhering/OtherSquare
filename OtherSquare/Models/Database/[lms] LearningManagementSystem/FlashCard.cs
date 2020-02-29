@@ -15,7 +15,7 @@ namespace OtherSquare.Models
         public string Title { get; set; }
         public string Question { get; set; }
         public string Answer { get; set; }
-        //public bool IsArchived { get; set; }
+        public bool IsSelected { get; set; }
 
         public Guid CategoryGuid { get; set; }
         public virtual Category Category { get; set; }

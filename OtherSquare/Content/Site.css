@@ -24,7 +24,6 @@ button {
 
 button:hover {
     text-shadow: 0 0 1px var(--color_hover);
-    /*color: var(--color_hover);*/
 }
 
 button:active {
@@ -36,16 +35,10 @@ button:focus {
     border: solid 1px var(--color_hover);
 }
 
-/*button:disabled {
-    color: #efefef;
-    border: solid 1px #efefef;
-}*/
-
 input, log-in, log-out {
     padding: 0 var(--site-padding);
     border-radius: 3px;
     border: solid 1px #808080;
-    /*height: calc(var(--font-size) * 1.6);*/
 }
 
 input {
@@ -116,7 +109,6 @@ textarea {
     max-width: 1200px;
 }
 .area-nav-bar {
-    /*background-color: #DDD;*/
     background: linear-gradient(#dddddd, rgba(0,0,0,.2));
     padding: var(--site-padding) var(--site-padding) 0 var(--site-padding);
     box-shadow: inset 0 -1px #808080;
@@ -179,11 +171,6 @@ textarea {
     background-color: #FFF;
     pointer-events: none;
 }
-
-/*.progress:before {
-    content: "LOADING";
-    text-align: center;
-}*/
 
 .overlay {
     position: fixed;
@@ -329,8 +316,7 @@ textarea {
 }
 
 .item-list-item.archived {
-    /*TODO Apply a real style here*/
-    color: red;
+    color: #999;
 }
 
 .title-edit {

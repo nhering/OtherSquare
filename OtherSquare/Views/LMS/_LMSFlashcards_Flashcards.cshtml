@@ -3,9 +3,7 @@
 @using Newtonsoft.Json;
 
 @{
-    //if (Model.Settings.SelectedFlashcard == null) { Model.Settings.SelectedFlashcard = new OtherSquare.Models.FlashCard(); };
     string expandCollapse = Model.Settings.FlashcardAccordionExpanded ? "expanded" : "collapsed";
-
 }
 <div class="section">
     <div class="section-title-bar flashcard-section @expandCollapse">
@@ -13,7 +11,7 @@
             <span class="expand-collapse setting" data-behavior="click" name="FlashcardAccordionExpanded">+/-</span>Flashcards
         </div>
         <div class="section-controls flashcard-section @expandCollapse">
-            <button>Delete Selected</button>
+            <button id="deleteFlashcards">Delete Selected</button>
             <button id="newFlashcard">New</button>
         </div>
     </div>
@@ -51,11 +49,3 @@
         </div>
     </div>
 </div>
-
-@*<script>
-    if (typeof settingsObj !== "undefined") {
-        settingsObj["SelectedFlashcard"] = @Html.Raw(JsonConvert.SerializeObject(Model.Settings.SelectedFlashcard));
-        logger.log("PartialView Flashcards loaded. settingsObj = " + JSON.stringify(settingsObj));
-        LMS();
-    }
-</script>*@

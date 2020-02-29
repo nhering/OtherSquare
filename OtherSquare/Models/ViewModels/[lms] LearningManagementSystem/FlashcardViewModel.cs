@@ -71,7 +71,7 @@ namespace OtherSquare.ViewModels
 
         #region Methods
 
-        public void DeleteFlashcards(List<Guid> flashcardGuids)
+        public static void DeleteFlashcards(List<Guid> flashcardGuids)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace OtherSquare.ViewModels
                             ScoreIsNA = scoreIsNa,
                             Score = score,
                             IsArchived = false,
-                            Selected = false
+                            Selected = f.IsSelected
                         };
                         this.FlashcardList.Add(li);
                         if (f.FlashCardGuid == this.Settings.SelectedFlashcardGuid)
@@ -221,8 +221,7 @@ namespace OtherSquare.ViewModels
                 return InputValidation.Error(e.Message);
             }
         }
-
-
+        
         #endregion
     }
 }
