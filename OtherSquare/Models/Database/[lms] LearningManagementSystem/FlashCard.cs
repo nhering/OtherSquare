@@ -32,38 +32,5 @@ namespace OtherSquare.Models
             this.Answer = "";
             this.CategoryGuid = categoryGuid;
         }
-
-        //public void Save()
-        //{
-        //    if (string.IsNullOrEmpty(this.Title)) return;
-        //    try
-        //    {
-        //        using (OtherSquareDbContext db = new OtherSquareDbContext())
-        //        {
-        //            FlashCard dbFlashcard = db.FlashCards.FirstOrDefault(s => s.FlashCardGuid == this.FlashCardGuid);
-        //            if (dbFlashcard == null)
-        //            {
-        //                dbFlashcard = new FlashCard()
-        //                {
-        //                    FlashCardGuid = Guid.NewGuid(),
-        //                    Title = this.Title,
-        //                    Question = this.Question,
-        //                    Answer = this.Answer
-        //                };
-        //                db.FlashCards.Add(dbFlashcard);
-        //            }
-        //            else
-        //            {
-        //                dbFlashcard.Title = this.Title;
-        //            }
-        //            db.SaveChanges();
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        //TODO Log exception
-        //        throw;
-        //    }
-        //}
     }
 }
