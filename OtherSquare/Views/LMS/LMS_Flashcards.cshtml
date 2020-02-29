@@ -1,20 +1,20 @@
-﻿@model OtherSquare.ViewModels.NAV_FlashCardViewModel
+﻿@model OtherSquare.ViewModels.LMS_Flashcards
 @using Newtonsoft.Json;
 
 @Html.Partial("_LMSSubMenu")
 
 <div class="area-container">
     <div id="settings">
-        @Html.Partial("_LMSFlashcards_Settings", Model.Settings)
+        @Html.Partial("_LMS_Flashcards_Settings", Model.Settings)
     </div>
     <div id="subjects">
-        @Html.Partial("_LMSFlashcards_Subjects", Model)
+        @Html.Partial("_LMS_Flashcards_Subjects", Model)
     </div>
     <div id="categories">
-        @Html.Partial("_LMSFlashcards_Categories", Model)
+        @Html.Partial("_LMS_Flashcards_Categories", Model)
     </div>
     <div id="flashcards">
-        @Html.Partial("_LMSFlashcards_Flashcards", Model)
+        @Html.Partial("_LMS_Flashcards_Flashcards", Model)
     </div>
 </div>
 

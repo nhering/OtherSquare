@@ -58,11 +58,11 @@ namespace OtherSquare.Controllers.API
                 if (dto.guids == null) return;
                 if (dto.modelType == "subject")
                 {
-                    SubjectViewModel.ArchiveSubjects(dto.guids);
+                    LMS_Flashcards_Subjects.ArchiveSubjects(dto.guids);
                 }
                 if (dto.modelType == "category")
                 {
-                    CategoryViewModel.ArchiveCategories(dto.guids);
+                    LMS_Flashcards_Categories.ArchiveCategories(dto.guids);
                 }
             }
             catch
@@ -81,11 +81,11 @@ namespace OtherSquare.Controllers.API
                 if (dto.guids == null) return;
                 if (dto.modelType == "subject")
                 {
-                    SubjectViewModel.UnArchiveSubjects(dto.guids);
+                    LMS_Flashcards_Subjects.UnArchiveSubjects(dto.guids);
                 }
                 if (dto.modelType == "category")
                 {
-                    CategoryViewModel.UnArchiveCategories(dto.guids);
+                    LMS_Flashcards_Categories.UnArchiveCategories(dto.guids);
                 }
             }
             catch
@@ -102,7 +102,7 @@ namespace OtherSquare.Controllers.API
             try
             {
                 if (dto.guids == null) return;
-                FlashcardViewModel.DeleteFlashcards(dto.guids);
+                LMS_Flashcards_Flashcards.DeleteFlashcards(dto.guids);
             }
             catch
             {
@@ -117,7 +117,7 @@ namespace OtherSquare.Controllers.API
         public string SaveSubject(UserSetting model)
         {
             model.UserId = User.Identity.GetUserId();
-            InputValidation val = SubjectViewModel.SaveSubject(model);
+            InputValidation val = LMS_Flashcards_Subjects.SaveSubject(model);
             return val.ToJson();
         }
 
@@ -126,7 +126,7 @@ namespace OtherSquare.Controllers.API
         public string SaveCategory(UserSetting model)
         {
             model.UserId = User.Identity.GetUserId();
-            InputValidation val =CategoryViewModel.SaveCategory(model);
+            InputValidation val =LMS_Flashcards_Categories.SaveCategory(model);
             return val.ToJson();
         }
 
@@ -135,7 +135,7 @@ namespace OtherSquare.Controllers.API
         public string SaveFlashcard(UserSetting model)
         {
             model.UserId = User.Identity.GetUserId();
-            InputValidation val = FlashcardViewModel.SaveFlashcard(model);
+            InputValidation val = LMS_Flashcards_Flashcards.SaveFlashcard(model);
             return val.ToJson();
         }
     }

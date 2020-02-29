@@ -7,18 +7,18 @@ using System.Web;
 
 namespace OtherSquare.ViewModels
 {
-    public class CategoryViewModel
+    public class LMS_Flashcards_Categories
     {
         #region Properties
 
-        private NAV_FlashcardSettings _settings { get; set; }
-        private NAV_FlashcardSettings Settings
+        private LMS_Flashcards_Settings _settings { get; set; }
+        private LMS_Flashcards_Settings Settings
         {
             get
             {
                 if (_settings == null)
                 {
-                    this._settings = new NAV_FlashcardSettings();
+                    this._settings = new LMS_Flashcards_Settings();
                 }
                 return _settings;
             }
@@ -26,7 +26,7 @@ namespace OtherSquare.ViewModels
             {
                 if (value == null)
                 {
-                    value = new NAV_FlashcardSettings();
+                    value = new LMS_Flashcards_Settings();
                 }
                 _settings = value;
             }
@@ -53,7 +53,7 @@ namespace OtherSquare.ViewModels
 
         #region Constructor
 
-        public CategoryViewModel(NAV_FlashcardSettings settings = null)
+        public LMS_Flashcards_Categories(LMS_Flashcards_Settings settings = null)
         {
             try
             {
@@ -171,14 +171,14 @@ namespace OtherSquare.ViewModels
         
         public static InputValidation SaveCategory(UserSetting userSetting)
         {
-            NAV_FlashcardSettings fSet = null;
+            LMS_Flashcards_Settings fSet = null;
             Guid uiSubjectGuid = Guid.Empty;
             Guid uiCategoryGuid = Guid.Empty;
             string uiTitle = null;
             Category dbCategory = null;
             try
             {
-                fSet = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
+                fSet = JsonConvert.DeserializeObject<LMS_Flashcards_Settings>(userSetting.SettingsJSON);
                 uiSubjectGuid = fSet.SelectedSubjectGuid;
                 if (uiSubjectGuid == Guid.Empty || uiSubjectGuid == null) return InputValidation.Error("Something went wrong. This category has no subject. Can not create orphan categories.");
                 uiCategoryGuid = fSet.SelectedCategoryGuid;

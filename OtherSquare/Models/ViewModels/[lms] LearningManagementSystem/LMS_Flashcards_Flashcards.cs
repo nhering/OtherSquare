@@ -7,18 +7,18 @@ using System.Web;
 
 namespace OtherSquare.ViewModels
 {
-    public class FlashcardViewModel
+    public class LMS_Flashcards_Flashcards
     {
         #region Properties
 
-        private NAV_FlashcardSettings _settings { get; set; }
-        private NAV_FlashcardSettings Settings
+        private LMS_Flashcards_Settings _settings { get; set; }
+        private LMS_Flashcards_Settings Settings
         {
             get
             {
                 if (_settings == null)
                 {
-                    this._settings = new NAV_FlashcardSettings();
+                    this._settings = new LMS_Flashcards_Settings();
                 }
                 return _settings;
             }
@@ -26,7 +26,7 @@ namespace OtherSquare.ViewModels
             {
                 if (value == null)
                 {
-                    value = new NAV_FlashcardSettings();
+                    value = new LMS_Flashcards_Settings();
                 }
                 _settings = value;
             }
@@ -53,7 +53,7 @@ namespace OtherSquare.ViewModels
 
         #region Constructor
 
-        public FlashcardViewModel(NAV_FlashcardSettings settings = null)
+        public LMS_Flashcards_Flashcards(LMS_Flashcards_Settings settings = null)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace OtherSquare.ViewModels
 
         public static InputValidation SaveFlashcard(UserSetting userSetting)
         {
-            NAV_FlashcardSettings fSet = null;
+            LMS_Flashcards_Settings fSet = null;
             Guid uiCategoryGuid = Guid.Empty;
             Guid uiFlashcardGuid = Guid.Empty;
             string uiTitle = null;
@@ -154,7 +154,7 @@ namespace OtherSquare.ViewModels
             FlashCard dbFlashcard = null;
             try
             {
-                fSet = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
+                fSet = JsonConvert.DeserializeObject<LMS_Flashcards_Settings>(userSetting.SettingsJSON);
                 uiCategoryGuid = fSet.SelectedCategoryGuid;
                 if (uiCategoryGuid == Guid.Empty || uiCategoryGuid == null) return InputValidation.Error("Something went wrong. This flashcard has no category. Can not create orphan flashcards.");
                 uiFlashcardGuid = fSet.SelectedFlashcardGuid;

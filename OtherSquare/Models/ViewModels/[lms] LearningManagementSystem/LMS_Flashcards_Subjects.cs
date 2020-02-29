@@ -6,18 +6,18 @@ using OtherSquare.Models;
 
 namespace OtherSquare.ViewModels
 {
-    public class SubjectViewModel
+    public class LMS_Flashcards_Subjects
     {
         #region Properties
 
-        private NAV_FlashcardSettings _settings { get; set; }
-        private NAV_FlashcardSettings Settings
+        private LMS_Flashcards_Settings _settings { get; set; }
+        private LMS_Flashcards_Settings Settings
         {
             get
             {
                 if (_settings == null)
                 {
-                    this._settings = new NAV_FlashcardSettings();
+                    this._settings = new LMS_Flashcards_Settings();
                 }
                 return _settings;
             }
@@ -25,7 +25,7 @@ namespace OtherSquare.ViewModels
             {
                 if (value == null)
                 {
-                    value = new NAV_FlashcardSettings();
+                    value = new LMS_Flashcards_Settings();
                 }
                 _settings = value;
             }
@@ -52,7 +52,7 @@ namespace OtherSquare.ViewModels
 
         #region Constructor
 
-        public SubjectViewModel(NAV_FlashcardSettings settings = null)
+        public LMS_Flashcards_Subjects(LMS_Flashcards_Settings settings = null)
         {
             try
             {
@@ -173,13 +173,13 @@ namespace OtherSquare.ViewModels
 
         public static InputValidation SaveSubject(UserSetting userSetting)
         {
-            NAV_FlashcardSettings fSet = null;
+            LMS_Flashcards_Settings fSet = null;
             Guid uiSubjectGuid = Guid.Empty;
             string uiTitle = null;
             Subject dbSubject = null;
             try
             {
-                fSet = JsonConvert.DeserializeObject<NAV_FlashcardSettings>(userSetting.SettingsJSON);
+                fSet = JsonConvert.DeserializeObject<LMS_Flashcards_Settings>(userSetting.SettingsJSON);
                 uiSubjectGuid = fSet.SelectedSubjectGuid;
                 uiTitle = fSet.SelectedSubjectTitle.Trim();
                 if (string.IsNullOrEmpty(uiTitle)) return InputValidation.Error("Title can not be empty.");

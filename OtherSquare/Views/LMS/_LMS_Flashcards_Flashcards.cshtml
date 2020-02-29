@@ -1,4 +1,4 @@
-﻿@model OtherSquare.ViewModels.NAV_FlashCardViewModel
+﻿@model OtherSquare.ViewModels.LMS_Flashcards
 @using OtherSquare.ViewModels;
 @using Newtonsoft.Json;
 
@@ -23,9 +23,9 @@
             </div>
             <div id="flashcardList" class="item-list-content" data-type="flashcard">
                 @{
-                    foreach (ListItemViewModel i in Model.FlashcardViewModel.FlashcardList)
+                    foreach (ListItemViewModel i in Model.Flashcards.FlashcardList)
                         {
-                            @Html.Partial("_LMSFlashCards_ListItem", i)
+                            @Html.Partial("_LMS_FlashCards_ListItem", i)
                         }
                 }
             </div>

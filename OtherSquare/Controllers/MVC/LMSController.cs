@@ -13,47 +13,15 @@ namespace OtherSquare.Controllers.MVC
 {
     public class LMSController : Controller
     {
+        // The default for a new user when they enter the LMS tab is 
+        // to direct them to the Flashcards sub tab
         [HttpGet]
         public ActionResult Index()
         {
             string userId = User.Identity.GetUserId();
             UserSetting userSetting = new UserSetting(userId, "/LMS");
-            NAV_FlashCardViewModel model = new NAV_FlashCardViewModel(userSetting);
-            return View("LMSFlashcards", model);
+            LMS_Flashcards model = new LMS_Flashcards(userSetting);
+            return View("LMS_Flashcards", model);
         }
-
-        #region LMS/Flashcards
-
-        [HttpGet]
-        [Route("/LMS/GetSubjectPartial")]
-        public ActionResult GetSubjectPartial(UserSetting model)
-        {
-            model.UserId = User.Identity.GetUserId();
-            model.SaveSettings();
-            NAV_FlashCardViewModel viewModel = NAV_FlashCardViewModel.GetSubjectViewModel(model);
-            return PartialView("_LMSFlashcards_Subjects", viewModel);
-        }
-
-        [HttpGet]
-        [Route("/LMS/GetCategoryPartial")]
-        public ActionResult GetCategoryPartial(UserSetting model)
-        {
-            model.UserId = User.Identity.GetUserId();
-            model.SaveSettings();
-            NAV_FlashCardViewModel viewModel = NAV_FlashCardViewModel.GetCategoryViewModel(model);
-            return PartialView("_LMSFlashcards_Categories", viewModel);
-        }
-
-        [HttpGet]
-        [Route("/LMS/GetFlashcardPartial")]
-        public ActionResult GetFlashcardPartial(UserSetting model)
-        {
-            model.UserId = User.Identity.GetUserId();
-            model.SaveSettings();
-            NAV_FlashCardViewModel viewModel = NAV_FlashCardViewModel.GetFlashCardViewModel(model);
-            return PartialView("_LMSFlashcards_Flashcards", viewModel);
-        }
-
-        #endregion
     }
 }
