@@ -252,7 +252,6 @@
     <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Flashcards_Categories.cs" />
     <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Flashcards_Flashcards.cs" />
     <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Flashcards.cs" />
-    <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Study.cs" />
     <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Flashcards_Subjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
