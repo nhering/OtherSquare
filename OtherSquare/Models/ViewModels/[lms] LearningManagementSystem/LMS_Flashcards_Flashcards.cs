@@ -106,7 +106,7 @@ namespace OtherSquare.ViewModels
                         int divisor = f.FlashcardAnswers.Count();
                         int dividend = f.FlashcardAnswers.Sum(fa => fa.IsCorrect ? 1 : 0);
                         bool scoreIsNa = true;
-                        int score = 0;
+                        double score = 0;
                         if (divisor > 0 && dividend == 0)
                         {
                             scoreIsNa = false;
@@ -114,7 +114,7 @@ namespace OtherSquare.ViewModels
                         else if (divisor > 0 && dividend > 0)
                         {
                             scoreIsNa = false;
-                            score = dividend / divisor;
+                            score = (double)dividend/divisor;
                         }
 
                         ListItemViewModel li = new ListItemViewModel()
@@ -122,7 +122,7 @@ namespace OtherSquare.ViewModels
                             Guid = f.FlashCardGuid,
                             Title = f.Title,
                             ScoreIsNA = scoreIsNa,
-                            Score = score,
+                            Score = Math.Floor(score * 100),
                             IsArchived = false,
                             Selected = f.IsSelected
                         };

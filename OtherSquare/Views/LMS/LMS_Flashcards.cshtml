@@ -24,8 +24,6 @@
 <script>
     $('document').ready(function () {
         settingsObj = @Html.Raw(JsonConvert.SerializeObject(Model.Settings));
-        redirectUrl = "LMS";
-        SetNavBreadcrumbs(["LMS", "LMS_Flashcards"]);
         LMSFlashcards();
     });
 </script>

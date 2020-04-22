@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -56,13 +57,13 @@ namespace OtherSquare.Models
                             RedirectURL = this.RedirectURL,
                             SettingsJSON = this.SettingsJSON
                         };
-                        db.UserSettings.Add(dbSetting);
+                        db.UserSettings.Add(newSetting);
                         db.SaveChanges();
                     }
                 }
                 result = true;
             }
-            catch
+            catch (Exception e)
             {
                 //TODO Log exception
                 throw;
@@ -76,15 +77,34 @@ namespace OtherSquare.Models
             {
                 using (OtherSquareDbContext db = new OtherSquareDbContext())
                 {
-                    int? maxTimeStamp = null;
+                    //int? maxTimeStamp = null;
                     try
                     {
-                        maxTimeStamp = db.UserSettings.Where(r => r.UserId == this.UserId).Max(s => s.TimeStamp);
-                        return db.UserSettings.FirstOrDefault(s => s.UserId == this.UserId && s.TimeStamp == maxTimeStamp).RedirectURL;
+                        List<UserSetting> userSettings = db.UserSettings.Where(u => u.UserId == this.UserId).ToList();
+                        if(userSettings != null)
+                        {
+                            if (userSettings.Count > 0)
+                            {
+                                // DON'T NEED THIS:  userSettings.OrderByDescending(t => t.TimeStamp);
+                                // get the record with the max timestamp
+                                var result = userSettings.OrderByDescending(o => o.TimeStamp).First().RedirectURL;
+                                return result;
+                            }
+                            else
+                            {
+                                return "";
+                            }
+                        }
+                        else
+                        {
+                            return "";
+                        }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        // The user hasn't visited any pages yet, use the default whitch will be used by the HomeController to send them to the home page.
+                        // The user hasn't visited any pages yet.
+                        // Use the default which will be used by the
+                        // HomeController to send them to the home page.
                         return "";
                     }
                 }

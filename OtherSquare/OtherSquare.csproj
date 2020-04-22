@@ -253,6 +253,7 @@
     <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Flashcards_Flashcards.cs" />
     <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Flashcards.cs" />
     <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Flashcards_Subjects.cs" />
+    <Compile Include="Models\ViewModels\[lms] LearningManagementSystem\LMS_Study.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -303,6 +304,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\site.css" />
     <None Include="Properties\PublishProfiles\othersquare.com - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\othersquare.com - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -313,8 +315,6 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
-    <Content Include="Scripts\jquery-ui.js" />
-    <Content Include="Scripts\jquery.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -324,6 +324,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\OtherSquare\lms_study.js" />
     <Content Include="Scripts\OtherSquare\logger.js" />
     <Content Include="Scripts\OtherSquare\main.js" />
     <Content Include="Scripts\OtherSquare\random.js" />
@@ -349,6 +350,11 @@
     <Content Include="Views\LMS\_LMS_Flashcards_Subjects.cshtml" />
     <Content Include="Views\LMS\_LMS_Flashcards_Categories.cshtml" />
     <Content Include="Views\LMS\_LMS_Flashcards_Flashcards.cshtml" />
+    <Content Include="Views\LMS\LMS_Study.cshtml" />
+    <Content Include="Views\LMS\_LMS_Study_Settings.cshtml" />
+    <Content Include="Views\LMS\_LMS_Study_Settings_Subjects.cshtml" />
+    <Content Include="Views\LMS\_LMS_Study_Settings_Categories.cshtml" />
+    <Content Include="Views\LMS\_LMS_Study_Quiz.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

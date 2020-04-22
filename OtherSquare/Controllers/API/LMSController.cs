@@ -111,7 +111,6 @@ namespace OtherSquare.Controllers.API
             }
         }
 
-
         [System.Web.Mvc.HttpPost]
         [Route("api/LMS/SaveSubject")]
         public string SaveSubject(UserSetting model)
@@ -137,6 +136,28 @@ namespace OtherSquare.Controllers.API
             model.UserId = User.Identity.GetUserId();
             InputValidation val = LMS_Flashcards_Flashcards.SaveFlashcard(model);
             return val.ToJson();
+        }
+
+        [System.Web.Mvc.HttpPost]
+        [Route("api/LMS/StartQuiz")]
+        public void StartQuiz(UserSetting model)
+        {
+            model.UserId = User.Identity.GetUserId();
+            LMS_Study viewModel = new LMS_Study(model);
+            viewModel.Settings.StartQuiz();
+            model.SettingsJSON = JsonConvert.SerializeObject(viewModel.Settings);
+            model.SaveSettings();
+        }
+
+        [System.Web.Mvc.HttpPost]
+        [Route("api/LMS/NextQuestion")]
+        public void NextQuestion(UserSetting model)
+        {
+            model.UserId = User.Identity.GetUserId();
+            LMS_Study viewModel = new LMS_Study(model);
+            viewModel.Settings.AnswerQuestion();
+            model.SettingsJSON = JsonConvert.SerializeObject(viewModel.Settings);
+            model.SaveSettings();
         }
     }
 

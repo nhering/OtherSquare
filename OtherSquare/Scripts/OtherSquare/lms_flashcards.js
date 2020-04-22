@@ -1,11 +1,14 @@
 ﻿let allowSelect = true;
 
 var LMSFlashcards = function () {
+    redirectUrl = "/LMS/Flashcards";
+    SetNavBreadcrumbs(["LMS", "LMS_Flashcards"]);
+    SaveSettings();
+
     //#region Settings
 
     $('.setting').click(function () {
         if ($(this).data("behavior") !== "click") return;
-        logger.debug(".setting.click()");
         let name = $(this).attr("name");
         switch (name) {
             case "SettingsAccordionExpanded":
@@ -21,7 +24,7 @@ var LMSFlashcards = function () {
                 $('.unarchive').toggleClass("hide");
                 settingsObj[name] = value;
                 SaveSettings(function () {
-                    window.location = "/Home/Index";
+                    window.location = redirectUrl;
                 });
                 break;
             case "SubjectAccordionExpanded":
@@ -52,7 +55,6 @@ var LMSFlashcards = function () {
 
     $('.setting').change(function () {
         if ($(this).data("behavior") !== "change") return;
-        logger.debug(".setting.change()");
         let name = $(this).attr("name");
         let value;
         switch (name) {
@@ -99,7 +101,7 @@ var LMSFlashcards = function () {
             modelType: $(this).parent().data("type")
         };
         $.ajax({
-            url: "api/LMS/SelectItem",
+            url: "/api/LMS/SelectItem",
             type: "POST",
             data: data,
             success: function () {
@@ -145,7 +147,7 @@ var LMSFlashcards = function () {
                 ClearFlashcardSettings();
                 Loading.begin();
                 SaveSettings(function () {
-                    window.location = "/Home/Index";
+                    window.location = redirectUrl;
                 });
             });
         } else if ($(this).data("type") === "category") {
@@ -164,7 +166,7 @@ var LMSFlashcards = function () {
                 ClearFlashcardSettings();
                 Loading.begin();
                 SaveSettings(function () {
-                    window.location = "/Home/Index";
+                    window.location = redirectUrl;
                 });
             });
         } else if ($(this).data("type") === "flashcard") {
@@ -181,7 +183,7 @@ var LMSFlashcards = function () {
                 settingsObj["SelectedFlashcardTitle"] = $(this).data("title");
                 Loading.begin();
                 SaveSettings(function () {
-                    window.location = "/Home/Index";
+                    window.location = redirectUrl;
                 });
             });
         }
@@ -191,10 +193,8 @@ var LMSFlashcards = function () {
 };
 
 var InitializeDateSettings = function () {
-    logger.debug("initializeDateSettings");
     let begin = moment.utc($("#BeginDate").val()).format('MM/DD/YYYY');
     let end = moment.utc($("#EndDate").val()).format('MM/DD/YYYY');
-    logger.debug("Begin " + begin);
     $("#BeginDate").val(begin);
     $("#EndDate").val(end);
 };
@@ -206,8 +206,8 @@ var ApplyDateRange = function () {
     if (moment(end) > moment(begin)) {
         settingsObj["BeginDate"] = $('#BeginDate').val();
         settingsObj["EndDate"] = $('#EndDate').val();
-        SaveSettings("/LMS", settingsObj);
-        window.location = "/Home/Index";
+        SaveSettings();
+        window.location = redirectUrl;
     } else {
         DrawAttention("BeginDate", "red");
         DrawAttention("EndDate", "red");
@@ -304,17 +304,17 @@ $("#saveSubject").click(function () {
     if ($("#subjectTitle").val().trim() === "") return;
     settingsObj["SelectedSubjectTitle"] = $("#subjectTitle").val();
     let data = AddAntiForgeryToken({
-        RedirectURL: "/" + redirectUrl,
+        RedirectURL: redirectUrl,
         SettingsJSON: JSON.stringify(settingsObj)
     });
     $.ajax({
-        url: "api/LMS/SaveSubject",
+        url: "/api/LMS/SaveSubject",
         type: "POST",
         data: data,
         success: function (response) {
             let val = InputValidation.fromJson(response);
             if (val.cssClass === "" || val.cssClass === "success") {
-                window.location = "/Home/Index";
+                window.location = redirectUrl;
             } else {
                 //TODO use the InputValidation class to display the message
                 alert(JSON.stringify(val.message));
@@ -331,17 +331,17 @@ $("#saveCategory").click(function () {
     if ($("#categoryTitle").val().trim() === "") return;
     settingsObj["SelectedCategoryTitle"] = $("#categoryTitle").val();
     let data = AddAntiForgeryToken({
-        RedirectURL: "/" + redirectUrl,
+        RedirectURL: redirectUrl,
         SettingsJSON: JSON.stringify(settingsObj)
     });
     $.ajax({
-        url: "api/LMS/SaveCategory",
+        url: "/api/LMS/SaveCategory",
         type: "POST",
         data: data,
         success: function (response) {
             let val = InputValidation.fromJson(response);
             if (val.cssClass === "" || val.cssClass === "success") {
-                window.location = "/Home/Index";
+                window.location = redirectUrl;
             } else {
                 //TODO use the InputValidation class to display the message
                 alert(JSON.stringify(val.message));
@@ -360,17 +360,17 @@ $("#saveFlashcard").click(function () {
     settingsObj["SelectedFlashcardQuestion"] = $("#question").val();
     settingsObj["SelectedFlashcardAnswer"] = $("#answer").val();
     let data = AddAntiForgeryToken({
-        RedirectURL: "/" + redirectUrl,
+        RedirectURL: redirectUrl,
         SettingsJSON: JSON.stringify(settingsObj)
     });
     $.ajax({
-        url: "api/LMS/SaveFlashcard",
+        url: "/api/LMS/SaveFlashcard",
         type: "POST",
         data: data,
         success: function (response) {
             let val = InputValidation.fromJson(response);
             if (val.cssClass === "" || val.cssClass === "success") {
-                window.location = "/Home/Index";
+                window.location = redirectUrl;
             } else {
                 //TODO use the InputValidation class to display the message
                 alert(JSON.stringify(val.message));
@@ -420,7 +420,7 @@ var GetSelectedGuids = function (type) {
 var Archive_Unarchive = function (type, guids, action) {
     Loading.begin();
     $.ajax({
-        url: "api/LMS/" + action + "Items",
+        url: "/api/LMS/" + action + "Items",
         type: "POST",
         data: {
             modelType: type,
@@ -440,7 +440,7 @@ $("#deleteFlashcards").click(function () {
     let type = "flashcard";
     let guids = GetSelectedGuids(type);
     $.ajax({
-        url: "api/LMS/RemoveFlashcards",
+        url: "/api/LMS/RemoveFlashcards",
         type: "POST",
         data: {
             modelType: type,

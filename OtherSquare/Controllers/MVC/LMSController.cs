@@ -16,12 +16,23 @@ namespace OtherSquare.Controllers.MVC
         // The default for a new user when they enter the LMS tab is 
         // to direct them to the Flashcards sub tab
         [HttpGet]
-        public ActionResult Index()
+        [Route("LMS/Flashcards")]
+        public ActionResult Flashcards()
         {
             string userId = User.Identity.GetUserId();
-            UserSetting userSetting = new UserSetting(userId, "/LMS");
+            UserSetting userSetting = new UserSetting(userId, "/LMS/Flashcards");
             LMS_Flashcards model = new LMS_Flashcards(userSetting);
             return View("LMS_Flashcards", model);
+        }
+
+        [HttpGet]
+        [Route("LMS/Study")]
+        public ActionResult Study()
+        {
+            string userId = User.Identity.GetUserId();
+            UserSetting userSetting = new UserSetting(userId, "/LMS/Study");
+            LMS_Study model = new LMS_Study(userSetting);
+            return View("LMS_Study", model);
         }
     }
 }

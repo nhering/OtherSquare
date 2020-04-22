@@ -1,0 +1,30 @@
+﻿@model OtherSquare.ViewModels.LMS_Study
+@using Newtonsoft.Json;
+
+@Html.Partial("_LMSSubMenu")
+
+<div class="area-container">
+    @{
+        if (Model.Settings.QuizInProgress)
+        {
+            <div id="quiz">
+                @Html.Partial("_LMS_Study_Quiz", Model)
+            </div>
+        }
+        else
+        {
+            <div id="settings">
+                @Html.Partial("_LMS_Study_Settings", Model)
+            </div>
+        }
+    }
+</div>
+
+@Scripts.Render("~/bundles/lms_st")
+
+<script>
+    $('document').ready(function () {
+        settingsObj = @Html.Raw(JsonConvert.SerializeObject(Model.Settings));
+        LMSStudy();
+    });
+</script>

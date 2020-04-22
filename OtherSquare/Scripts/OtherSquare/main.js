@@ -19,7 +19,6 @@ class InputValidation {
 
     showValidation() {
         try {
-            logger.debug("InputValidation.showValidation()");
             let val = document.getElementById("inputValidation");
             val.classList.add("validation");
             val.classList.add(this.cssClass);
@@ -32,19 +31,17 @@ class InputValidation {
                 val.classList.add("hide");
             });
         } catch (error) {
-            logger.error(error);
+            console.error(error);
         }
     }
 }
 
 class Loading {
     static begin() {
-        logger.debug("loading started");
         $("#modal-overlay").removeClass("hide");
     }
 
     static end() {
-        logger.debug("loading ended");
         $("#modal-overlay").addClass("hide");
     }
 }
@@ -84,7 +81,6 @@ var AddAntiForgeryToken = function (data) {
  * @param {Array} IDs The array of HTML elements to apply the selected class to.
  */
 var SetNavBreadcrumbs = function (IDs) {
-    logger.debug("SetNavBreadcrumbs called");
     for (let i = 0; i < IDs.length; i++) {
         $("#" + IDs[i]).addClass("selected");
     }
@@ -96,14 +92,12 @@ var SetNavBreadcrumbs = function (IDs) {
  * @param {function} error The callback function to execute if the save fails.
  */
 var SaveSettings = function (success, error) {
-    logger.debug("SaveSettings called");
     let data = AddAntiForgeryToken({
-        RedirectURL: "/" + redirectUrl,
+        RedirectURL: redirectUrl,
         SettingsJSON: JSON.stringify(settingsObj)
     });
-    //console.log(JSON.stringify(data));
     $.ajax({
-        url: "api/Settings/Save",
+        url: "/api/Settings/Save",
         type: "POST",
         data: data,
         success: function (response) {

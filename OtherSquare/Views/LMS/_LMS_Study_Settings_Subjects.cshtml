@@ -1,0 +1,15 @@
+﻿@model OtherSquare.ViewModels.ListItemViewModel
+
+<div class="item-list-item" data-guid="@Model.Guid" data-title="@Model.Title" data-type="">
+    <div class="item-title">@Model.Title</div>
+    @{
+        if (Model.ScoreIsNA)
+        {
+            <div>N/A</div>
+        }
+        else
+        {
+            <div>@Model.Score %</div>
+        }
+    }
+</div>

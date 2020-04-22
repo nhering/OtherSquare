@@ -1,0 +1,65 @@
+﻿@model OtherSquare.ViewModels.LMS_Study
+@using OtherSquare.ViewModels;
+
+@{ 
+    var quizInfo = "";
+    var currentQuetion = 0;
+    var totalQuestions = 0;
+    var mode = "expanded";
+    if (@Model.Settings.FlashcardQuiz.Current != Guid.Empty)
+    {
+        currentQuetion = @Model.Settings.FlashcardQuiz.Answered.Count + 1;
+        totalQuestions = @Model.Settings.FlashcardQuiz.Answered.Count + 1 + @Model.Settings.FlashcardQuiz.Unanswered.Count;
+        quizInfo = $"Q: {currentQuetion} of {totalQuestions}";
+    }
+    else
+    {
+        quizInfo = "Complete";
+        mode = "collapsed";
+    }
+}
+
+<div class="section">
+    <div class="section-title-bar setting-section @mode">
+        <div class="section-title">
+            <div class="section-controls">
+                <button id="stopQuiz" class="">Stop Quiz</button>
+            </div>
+        </div>
+
+        <div id="quizInfo" style="padding:6px 12px 0 0;">
+            <div class="section-info">@Model.Settings.FlashcardQuiz.SubjectTitle</div>
+            @{
+                if (Model.Settings.FlashcardQuiz.Current != Guid.Empty)
+                {
+                    <span>&nbsp;| &nbsp;</span>
+                    <div class="section-info">@Model.Settings.FlashcardQuiz.CategoryTitle</div>
+                }
+            }
+            &nbsp;|&nbsp;
+            <div class="section-info">@quizInfo</div>
+            &nbsp;|&nbsp;
+            <div class="section-info">@Model.Settings.FlashcardQuiz.Score %</div>
+        </div>
+    </div>
+    @{
+        if (Model.Settings.FlashcardQuiz.Current != Guid.Empty)
+        {
+            <div class="section-content">
+                <div>
+                    @Model.Settings.FlashcardQuiz.Question
+                    <hr />
+                    <button id="showAnswer" class="">Show Answer</button>
+                </div>
+                <div id="answer" class="hide">
+                    <textarea class="quiz-answer">
+                        @Model.Settings.FlashcardQuiz.Answer
+                    </textarea>
+                    <hr />
+                    <button id="correct" class="">Correct</button>
+                    <button id="incorrect" class="">Incorrect</button>
+                </div>
+            </div>
+        }
+    }
+</div>

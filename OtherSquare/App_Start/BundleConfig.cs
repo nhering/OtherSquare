@@ -21,6 +21,9 @@ namespace OtherSquare
             bundles.Add(new ScriptBundle("~/bundles/lms_fc").Include(
                 "~/Scripts/OtherSquare/lms_flashcards.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/lms_st").Include(
+                "~/Scripts/OtherSquare/lms_study.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/moment").Include(
                 "~/Scripts/moment.js"
                 ));

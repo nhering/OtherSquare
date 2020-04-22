@@ -1,0 +1,68 @@
+﻿@model OtherSquare.ViewModels.LMS_Study
+@using OtherSquare.ViewModels;
+
+@*  if the quiz is not in progress then display the expanded
+    version of the settings section
+    -- this should show:
+       -- 'quiz me' button
+       -- subject section to select only one subject to study
+          this should not show archived subjects
+       -- category section to select at least one category to study
+          this should not show archived categories
+       -- the total number of questions selected as calculated
+          by adding up the number of questions per selected category
+*@
+<div class="section">
+    <div class="section-title-bar setting-section expanded">
+        <div class="section-title">
+            <div class="section-controls">
+                <button id="startQuiz" class="">Start Quiz</button>
+            </div>
+        </div>
+
+        <div id="settingsInfo" style="padding:6px 12px 0 0;">
+            <div class="section-info" id="subjectTitle">Subject</div>
+            &nbsp;|&nbsp;
+            <div class="section-info" id="categoryCount">##</div>
+            &nbsp;Categor<span id="pluralizeCategory">y</span>
+            &nbsp;|&nbsp;
+            <div class="section-info" id="questionCount">##</div>
+            &nbsp;Question<span id="pluralizeQuestions"></span>
+        </div>
+    </div>
+    <div class="section-content">
+        <div class="item-list">
+            <div class="item-list-title-bar">Subjects</div>
+            <div class="item-list-content" data-type="subject">
+                @{
+                    foreach (ListItemViewModel li in Model.Subjects)
+                    {
+                        @Html.Partial("_LMS_Study_Settings_Subjects", li)
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="item-list">
+            <div class="item-list-title-bar">Categories</div>
+            <div class="item-list-content" data-type="category">
+                @{
+                    foreach (ListItemViewModel li in Model.Categories)
+                    {
+                        @Html.Partial("_LMS_Study_Settings_Categories", li)
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@*  if the quiz is in progress then display the collapsed version
+    of the settings section
+    -- this should show:
+       -- 'end quiz' button
+       -- the subject being quized on
+       -- the total number of questions
+       -- the current score
+       -- the number of questions remaining to be answered
+*@

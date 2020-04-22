@@ -26,7 +26,7 @@ namespace OtherSquare.Models
         {
             this.TimeStamp = DateTime.UtcNow;
             this.FlashCardGuid = FlashCardGuid;
-            this.IsCorrect = IsCorrect;
+            this.IsCorrect = isCorrect;
         }
     }
 }

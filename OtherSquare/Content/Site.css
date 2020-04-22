@@ -19,6 +19,8 @@ button {
     border-radius: 3px;
     border: solid 1px #808080;
     height: calc(var(--font-size) * 1.6);
+    background-color: #FFF;
+    font-size: 1.02em;
     cursor: pointer;
 }
 
@@ -172,39 +174,6 @@ textarea {
     pointer-events: none;
 }
 
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(255,255,255,0.5);
-    z-index: 10;
-}
-
-.modal {
-    width: 300px;
-    height: 200px;
-    line-height: 200px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -100px;
-    margin-left: -150px;
-    background-color: rgba(0,0,0,0.5);
-    border-radius: 5px;
-    text-align: center;
-    font-size: 2em;
-    z-index: 11;
-}
-
-/*#endregion */
-
-/*#region LMS*/
-:root {
-    --toggle-button-size: 20px;
-}
-
 .section {
     border-radius: 6px;
     box-shadow: 0 0 6px rgba(0,0,60,.3);
@@ -247,18 +216,9 @@ textarea {
     font-size: 1.02em;
 }
 
-.expand-collapse {
-    margin-right: var(--site-padding);
-    justify-content: center;
-    align-content: center;
-    width: var(--toggle-button-size);
-    background-color: #FFF;
-    border-radius: 3px;
-    border: 1px solid #999;
-    padding: 0 var(--site-padding);
-    font-size: 1.02em;
-    color: #777;
-    cursor: pointer;
+.section-info {
+    display: inline;
+    padding-top: 6px;
 }
 
 .section-content {
@@ -274,6 +234,50 @@ textarea {
 
 .section-content.collapsed {
     display: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255,255,255,0.5);
+    z-index: 10;
+}
+
+.modal {
+    width: 300px;
+    height: 200px;
+    line-height: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -150px;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 5px;
+    text-align: center;
+    font-size: 2em;
+    z-index: 11;
+}
+
+/*#endregion */
+
+/*#region LMS Flashcards*/
+
+.expand-collapse {
+    margin-right: var(--site-padding);
+    justify-content: center;
+    align-content: center;
+    width: 20px;
+    background-color: #FFF;
+    border-radius: 3px;
+    border: 1px solid #999;
+    padding: 0 var(--site-padding);
+    font-size: 1.02em;
+    color: #777;
+    cursor: pointer;
 }
 
 .item-list {
@@ -355,6 +359,15 @@ textarea {
 .date-picker {
     width: 90px;
     text-align: center;
+}
+
+/*#endregion*/
+
+/*#region LMS Study*/
+
+.quiz-answer {
+    height: 500px;
+    width: calc(100% - var(--site-padding) + 3px);
 }
 
 /*#endregion*/
