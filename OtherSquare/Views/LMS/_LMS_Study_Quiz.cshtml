@@ -10,7 +10,7 @@
     {
         currentQuetion = @Model.Settings.FlashcardQuiz.Answered.Count + 1;
         totalQuestions = @Model.Settings.FlashcardQuiz.Answered.Count + 1 + @Model.Settings.FlashcardQuiz.Unanswered.Count;
-        quizInfo = $"Q: {currentQuetion} of {totalQuestions}";
+        quizInfo = "Q: " + currentQuetion.ToString() + " of " + totalQuestions.ToString();
     }
     else
     {
